@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Brand Lists</title>
+    <title>Create Brand</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
   <body>
@@ -29,32 +29,27 @@
     <!-- End Navbar -->
     
     <div class="container mt-3">
-        <div class="row">
-            <div class="col">
-                <h1>Brand Lists</h1>
-            </div>
-            <div class="col">
-                <a href="/brand/add" class="btn btn-primary float-end">Add Brand</a>
+        <div class="row d-flex justify-content-center">
+            <div class="col-4">
+                <h2>Add Brand</h2>
+                <hr>
+
+                <form action="/brand/add" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" autocomplete="off">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a href="/brand" class="btn btn-secondary float-start">Back</a>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary float-end">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <hr>
-        <table class="table table-bordered mt-2">
-            <thead>
-                <tr>
-                    <th class="text-center">No</th>
-                    <th>Brand Name</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-            </tbody>
-                <td class="text-center">1</td>
-                <td>Nike</td>
-                <td class="text-center">
-                    <a href="#" class="btn btn-info">Edit</a>
-                    <a href="#" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this category ?')">Delete</a>
-                </td>
-            </tbody>
-        </table>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
