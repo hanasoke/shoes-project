@@ -6,6 +6,7 @@ import (
 	"shoes-project/config"
 	"shoes-project/controllers/brand"
 	"shoes-project/controllers/homepage"
+	"shoes-project/controllers/shoes"
 )
 
 func main() {
@@ -16,6 +17,9 @@ func main() {
 
 	// 2. Brand
 	http.HandleFunc("/brand", brand.Index)
+
+	// 3. Shoes
+	http.HandleFunc("/shoes", shoes.Index)
 
 	log.Println("Server running on port 8080")
 	http.ListenAndServe(":8080", nil)
