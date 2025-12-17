@@ -21,6 +21,6 @@ func main() {
 	// 3. Shoes
 	http.HandleFunc("/shoes", shoes.Index)
 
-	log.Println("Server running on port 8080")
-	http.ListenAndServe(":8080", nil)
+	log.Println("Server running on port 8082")
+	http.ListenAndServe(":8082", nil)
 }
