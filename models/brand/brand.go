@@ -1,0 +1,5 @@
+package brand
+
+func GetAll() {
+
+}
