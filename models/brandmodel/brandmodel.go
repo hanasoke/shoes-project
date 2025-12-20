@@ -1,9 +1,31 @@
 package brandmodel
 
 import (
+	"database/sql"
+	"errors"
 	"shoes-project/config"
 	"shoes-project/entities"
 )
+
+var ErrDuplicateBrand = errors.New("brand already exists")
+
+func IsBrandExists(name string) (bool, error) {
+	var id uint
+	err := config.DB.QueryRow(
+		"SELECT brand_id FROM brands WHERE brand_name = ? LIMIT 1",
+		name,
+	).Scan(&id)
+
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
 
 func GetAll() []entities.Brand {
 	rows, err := config.DB.Query(`SELECT * FROM brands`)
@@ -27,20 +49,23 @@ func GetAll() []entities.Brand {
 	return brands
 }
 
-func Create(brand entities.Brand) bool {
-	result, err := config.DB.Exec(`
-		INSERT INTO brands (brand_name, created_at, updated_at) VALUE (?, ?, ?)`,
-		brand.Brand_Name, brand.CreatedAt, brand.UpdatedAt,
+func Create(brand entities.Brand) error {
+	exists, err := IsBrandExists(brand.Brand_Name)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return ErrDuplicateBrand
+	}
+
+	_, err = config.DB.Exec(`
+		INSERT INTO brands (brand_name, created_at, updated_at)
+		VALUES (?, ?, ?)`,
+		brand.Brand_Name,
+		brand.CreatedAt,
+		brand.UpdatedAt,
 	)
 
-	if err != nil {
-		panic(err)
-	}
-
-	lastInsertId, err := result.LastInsertId()
-	if err != nil {
-		panic(err)
-	}
-
-	return lastInsertId > 0
+	return err
 }

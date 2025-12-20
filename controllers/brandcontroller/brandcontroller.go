@@ -3,9 +3,7 @@ package brandcontroller
 import (
 	"html/template"
 	"net/http"
-	"shoes-project/entities"
 	"shoes-project/models/brandmodel"
-	"time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -23,27 +21,13 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		temp, err := template.ParseFiles("views/brand/create.html")
-		if err != nil {
-			panic(err)
-		}
-
+	if r.Method == http.MethodGet {
+		temp := template.Must(template.ParseFiles("views/brand/create.html"))
 		temp.Execute(w, nil)
+		return
 	}
 
-	if r.Method == "POST" {
-		var brand entities.Brand
+	if r.Method == http.MethodPost {
 
-		brand.Brand_Name = r.FormValue("brand_name")
-		brand.CreatedAt = time.Now()
-		brand.UpdatedAt = time.Now()
-
-		if ok := brandmodel.Create(brand); !ok {
-			temp, _ := template.ParseFiles("views/brand/create.html")
-			temp.Execute(w, nil)
-		}
-
-		http.Redirect(w, r, "/brands", http.StatusSeeOther)
 	}
 }
