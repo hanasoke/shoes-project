@@ -1,28 +1,33 @@
 package brandcontroller
 
 import (
-	"shoes-project/config"
-	"shoes-project/entities"
+	"html/template"
+	"net/http"
+	"shoes-project/models/brandmodel"
 )
 
-func GetAll() []entities.Brand {
-	rows, err := config.DB.Query(`SELECT * FROM brands`)
+func Index(w http.ResponseWriter, r *http.Request) {
+	brands := brandmodel.GetAll()
+	data := map[string]any{
+		"brands": brands,
+	}
+
+	temp, err := template.ParseFiles("views/brand/index.html")
 	if err != nil {
 		panic(err)
 	}
 
-	defer rows.Close()
+	temp.Execute(w, data)
+}
 
-	var brands []entities.Brand
-
-	for rows.Next() {
-		var brand entities.Brand
-		if err := rows.Scan(&brand.Brand_Id, &brand.Brand_Name, &brand.CreatedAt, &brand.UpdatedAt); err != nil {
+func Add(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		temp, err := template.ParseFiles("views/brand/create.html")
+		if err != nil {
 			panic(err)
 		}
 
-		brands = append(brands, brand)
+		temp.Execute(w, nil)
 	}
 
-	return brands
 }

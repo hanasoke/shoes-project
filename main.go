@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"shoes-project/config"
+	"shoes-project/controllers/brandcontroller"
 	"shoes-project/controllers/homepage"
 	"shoes-project/controllers/shoes"
 )
@@ -15,6 +16,8 @@ func main() {
 	http.HandleFunc("/", homepage.Index)
 
 	// 2. Brand
+	http.HandleFunc("/brands", brandcontroller.Index)
+	http.HandleFunc("/brand/add", brandcontroller.Add)
 
 	// 3. Shoes
 	http.HandleFunc("/shoes", shoes.Index)
