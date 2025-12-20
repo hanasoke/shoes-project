@@ -47,12 +47,16 @@
                 </tr>
             </thead>
             </tbody>
-                <td class="text-center">1</td>
-                <td>Nike</td>
-                <td class="text-center">
-                    <a href="#" class="btn btn-info">Edit</a>
-                    <a href="#" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this category ?')">Delete</a>
-                </td>
+                {{ range .brands }}
+                <tr>
+                    <td class="text-center">1</td>
+                    <td>{{ .Brand_Name }}</td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-info">Edit</a>
+                        <a href="#" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this category ?')">Delete</a>
+                    </td>
+                </tr>
+                {{ end }}
             </tbody>
         </table>
     </div>
