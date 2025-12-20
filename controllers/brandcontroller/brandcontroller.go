@@ -9,17 +9,21 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int {
+			return a + b
+		},
+	}
+
 	brands := brandmodel.GetAll()
 	data := map[string]any{
 		"brands": brands,
 	}
 
-	temp, err := template.ParseFiles("views/brand/index.html")
-	if err != nil {
-		panic(err)
-	}
+	t := template.New("index.html").Funcs(funcMap)
+	t = template.Must(t.ParseFiles("views/brand/index.html"))
 
-	temp.Execute(w, data)
+	t.Execute(w, data)
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
