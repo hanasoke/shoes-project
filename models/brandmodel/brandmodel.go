@@ -101,16 +101,24 @@ func Detail(brand_id int) entities.Brand {
 	return brand
 }
 
-func Update(brand_id int, brand entities.Brand) bool {
-	query, err := config.DB.Exec(`UPDATE brands SET brand_name = ?, updated_at = ? WHERE brand_id = ?`, brand.Brand_Name, brand.UpdatedAt, brand_id)
+func Update(brand_id int, brand entities.Brand) error {
+	exists, err := IsBrandExistsExceptID(brand.Brand_Name, brand_id)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	result, err := query.RowsAffected()
-	if err != nil {
-		panic(err)
+	if exists {
+		return ErrDuplicateBrand
 	}
 
-	return result > 0
+	_, err = config.DB.Exec(`
+		UPDATE brands 
+		SET brand_name = ?, updated_at = ?
+		WHERE brand_id = ?`,
+		brand.Brand_Name,
+		brand.UpdatedAt,
+		brand_id,
+	)
+
+	return err
 }

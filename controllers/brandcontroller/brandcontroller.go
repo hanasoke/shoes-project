@@ -95,22 +95,10 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		var brand entities.Brand
+		// var brand entities.Brand
 
-		idString := r.FormValue("brand_id")
-		brand_id, err := strconv.Atoi(idString)
-		if err != nil {
-			panic(err)
-		}
+		// idString := r.FormValue("brand_id")
+		// brand_id, err := strconv.Atoi(idString)
 
-		brand.Brand_Name = r.FormValue("brand_name")
-		brand.UpdatedAt = time.Now()
-
-		if ok := brandmodel.Update(brand_id, brand); !ok {
-			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusSeeOther)
-			return
-		}
-
-		http.Redirect(w, r, "/brands", http.StatusSeeOther)
 	}
 }
