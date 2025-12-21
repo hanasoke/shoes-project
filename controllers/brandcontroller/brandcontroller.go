@@ -6,6 +6,7 @@ import (
 	"shoes-project/entities"
 	"shoes-project/models/brandmodel"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -95,10 +96,48 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		// var brand entities.Brand
+		idString := r.FormValue("brand_id")
+		brand_id, _ := strconv.Atoi(idString)
 
-		// idString := r.FormValue("brand_id")
-		// brand_id, err := strconv.Atoi(idString)
+		brandName := strings.TrimSpace(r.FormValue("brand_name"))
 
+		// ❌ NULL validation
+		if brandName == "" {
+			brand := brandmodel.Detail(brand_id)
+			data := map[string]any{
+				"brand": brand,
+				"error": "Brand name cannot be empty",
+			}
+
+			temp := template.Must(template.ParseFiles("views/brands/edit.html"))
+			temp.Execute(w, data)
+			return
+		}
+
+		brand := entities.Brand{
+			Brand_Name: brandName,
+			UpdatedAt:  time.Now(),
+		}
+
+		err := brandmodel.Update(brand_id, brand)
+		if err != nil {
+			msg := "Failed to update brand"
+
+			if err == brandmodel.ErrDuplicateBrand {
+				msg = "Brand name already exists"
+			}
+
+			oldBrand := brandmodel.Detail(brand_id)
+			data := map[string]any{
+				"brand": oldBrand,
+				"error": msg,
+			}
+
+			temp := template.Must(template.ParseFiles("views/brands/edit.html"))
+			temp.Execute(w, data)
+			return
+		}
+
+		http.Redirect(w, r, "/brands", http.StatusSeeOther)
 	}
 }
