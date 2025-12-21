@@ -140,3 +140,17 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/brands", http.StatusSeeOther)
 	}
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	idString := r.URL.Query().Get("brand_id")
+	brand_id, err := strconv.Atoi(idString)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := brandmodel.Delete(brand_id); err != nil {
+		panic(err)
+	}
+
+	http.Redirect(w, r, "/brands", http.StatusSeeOther)
+}

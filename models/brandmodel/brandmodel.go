@@ -122,3 +122,8 @@ func Update(brand_id int, brand entities.Brand) error {
 
 	return err
 }
+
+func Delete(brand_id int) error {
+	_, err := config.DB.Exec(`DELETE FROM brands WHERE brand_id = ?`, brand_id)
+	return err
+}
