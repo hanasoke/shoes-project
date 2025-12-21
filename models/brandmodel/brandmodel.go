@@ -69,3 +69,17 @@ func Create(brand entities.Brand) error {
 
 	return err
 }
+
+func Update(brand_id int, brand entities.Brand) bool {
+	query, err := config.DB.Exec(`UPDATE brands SET brand_name = ?, updated_at = ? WHERE brand_id = ?`, brand.Brand_Name, brand.UpdatedAt, brand_id)
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := query.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+
+	return result > 0
+}
