@@ -18,6 +18,7 @@ func main() {
 	// 2. Brand
 	http.HandleFunc("/brands", brandcontroller.Index)
 	http.HandleFunc("/brand/add", brandcontroller.Add)
+	http.HandleFunc("/brand/edit", brandcontroller.Edit)
 
 	// 3. Shoes
 	http.HandleFunc("/shoes", shoes.Index)

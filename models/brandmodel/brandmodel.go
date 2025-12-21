@@ -70,6 +70,17 @@ func Create(brand entities.Brand) error {
 	return err
 }
 
+func Detail(brand_id int) entities.Brand {
+	row := config.DB.QueryRow(`SELECT brand_id, brand_name FROM brands WHERE brand_id = ?`, brand_id)
+
+	var brand entities.Brand
+	if err := row.Scan(&brand.Brand_Id, &brand.Brand_Name); err != nil {
+		panic(err.Error())
+	}
+
+	return brand
+}
+
 func Update(brand_id int, brand entities.Brand) bool {
 	query, err := config.DB.Exec(`UPDATE brands SET brand_name = ?, updated_at = ? WHERE brand_id = ?`, brand.Brand_Name, brand.UpdatedAt, brand_id)
 	if err != nil {
