@@ -38,6 +38,14 @@
             </div>
         </div>
         <hr>
+
+        {{ if .success }}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ .success }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {{ end }}
+
         <table class="table table-bordered mt-2">
             <thead>
                 <tr>
@@ -53,12 +61,12 @@
                     <td>{{ $b.Brand_Name }}</td>
                     <td class="text-center">
                         <a href="/brand/edit?brand_id={{ $b.Brand_Id }}" class="btn btn-info">Edit</a>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $b.Brand_Id }}">Delete</button>
                     </td>
                 </tr>
 
                 <!-- Modal -->
-                <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="delete{{ $b.Brand_Id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                         <div class="modal-header">
@@ -66,11 +74,11 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure want to delete this brand ?
+                            Are you sure want to delete <strong>{{ $b.Brand_Name }}</strong>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <a href="/brand/delete?brand_id={{ .Brand_Id }}" class="btn btn-primary">Delete</a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <a href="/brand/delete?brand_id={{ $b.Brand_Id }}" class="btn btn-danger">Delete</a>
                         </div>
                         </div>
                     </div>

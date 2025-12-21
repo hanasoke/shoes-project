@@ -17,9 +17,15 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
+	success := ""
+	if r.URL.Query().Get("success") == "deleted" {
+		success = "Brand deleted successfully"
+	}
+
 	brands := brandmodel.GetAll()
 	data := map[string]any{
-		"brands": brands,
+		"brands":  brands,
+		"success": success,
 	}
 
 	t := template.New("index.html").Funcs(funcMap)
@@ -152,5 +158,5 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	http.Redirect(w, r, "/brands", http.StatusSeeOther)
+	http.Redirect(w, r, "/brands?success=deleted", http.StatusSeeOther)
 }
