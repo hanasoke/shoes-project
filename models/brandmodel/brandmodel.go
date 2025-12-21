@@ -27,6 +27,26 @@ func IsBrandExists(name string) (bool, error) {
 	return true, nil
 }
 
+func IsBrandExistsExceptID(name string, id int) (bool, error) {
+	var brandID int
+	err := config.DB.QueryRow(`
+		SELECT brand_id FROM brands 
+		WHERE brand_name = ? AND brand_id != ?
+		LIMIT 1`,
+		name, id,
+	).Scan(&brandID)
+
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func GetAll() []entities.Brand {
 	rows, err := config.DB.Query(`SELECT * FROM brands`)
 	if err != nil {
