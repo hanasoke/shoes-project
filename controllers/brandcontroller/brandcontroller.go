@@ -51,7 +51,6 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		brand := entities.Brand{
 			Brand_Name: brandName,
 			CreatedAt:  time.Now(),
-			UpdatedAt:  time.Now(),
 		}
 
 		err := brandmodel.Create(brand)
