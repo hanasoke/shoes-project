@@ -18,8 +18,15 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	success := ""
-	if r.URL.Query().Get("success") == "deleted" {
+
+	switch r.URL.Query().Get("success") {
+	case "created":
+		success = "Brand created successfully"
+	case "updated":
+		success = "Brand updated successfully"
+	case "deleted":
 		success = "Brand deleted successfully"
+
 	}
 
 	brands := brandmodel.GetAll()
@@ -75,7 +82,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/brands", http.StatusSeeOther)
+		http.Redirect(w, r, "/brands?success=created", http.StatusSeeOther)
 	}
 }
 
@@ -143,7 +150,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/brands", http.StatusSeeOther)
+		http.Redirect(w, r, "/brands?success=updated", http.StatusSeeOther)
 	}
 }
 
