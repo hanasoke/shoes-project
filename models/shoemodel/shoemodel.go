@@ -12,13 +12,10 @@ func GetAll() []entities.Shoe {
 			shoes.shoe_name, 
 			brands.name as brand_name,
 			shoes.shoe_type,
-			shoes.shoe_size,
 			shoes.shoe_description,
 			shoes.shoe_sku,
 			shoes.shoe_price,
 			shoes.shoe_stock,
-			shoes.shoe_photo,
-			shoes.shoe_status,
 			shoes.created_at,
 			shoes.updated_at 
 		FROM shoes 
@@ -40,13 +37,10 @@ func GetAll() []entities.Shoe {
 			&shoe.Name,
 			&shoe.Brand.Brand_Name,
 			&shoe.Type,
-			&shoe.Size,
 			&shoe.Description,
 			&shoe.Sku,
 			&shoe.Price,
 			&shoe.Stock,
-			&shoe.Photo,
-			&shoe.Status,
 			&shoe.CreatedAt,
 			&shoe.UpdatedAt,
 		)
