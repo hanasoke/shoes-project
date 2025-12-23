@@ -28,7 +28,7 @@
     </nav>
     <!-- End Navbar -->
     
-    <div class="container mt-3">
+    <div class="container my-3">
         <div class="row d-flex justify-content-center">
             <div class="col-6">
                 <h2 class="text-center">Add Shoe</h2>
@@ -41,10 +41,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="brand_name" class="form-label">Brand</label>
-                        <select class="form-select" id="brand_name" >
-                            <option selected>Select Brand </option>
-                            <option value="nike">Nike</option>
-                            <option value="adidas">Adidas</option>
+                        <select class="form-select" id="brand_id" name="brand_id">
+                            <option value="">Select Brand </option>
+                            <option value="1">Nike</option>
+                            <option value="2">Adidas</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -55,50 +55,50 @@
                         <label for="size" class="form-label">Size</label>
                         <div class="col">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="36" value="36">
-                                <label class="form-check-label" for="36">36</label>
+                                <input class="form-check-input" type="checkbox" name="size[]" id="36" value="36">
+                                <label class="form-check-label" name="size[]" for="36">36</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="37" value="37">
+                                <input class="form-check-input" name="size[]" type="checkbox" id="37" value="37">
                                 <label class="form-check-label" for="37">37</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="38" value="38">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="38" value="38">
                                 <label class="form-check-label" for="38">38</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="39" value="39">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="39" value="39">
                                 <label class="form-check-label" for="39">39</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="40" value="40">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="40" value="40">
                                 <label class="form-check-label" for="40">40</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="41" value="41">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="41" value="41">
                                 <label class="form-check-label" for="41">41</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="42" value="42">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="42" value="42">
                                 <label class="form-check-label" for="42">42</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="43" value="43">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="43" value="43">
                                 <label class="form-check-label" for="43">43</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="44" value="44">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="44" value="44">
                                 <label class="form-check-label" for="44">44</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="45" value="45">
+                                <input class="form-check-input" type="checkbox"  name="size[]" id="45" value="45">
                                 <label class="form-check-label" for="45">45</label>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" rows="3"></textarea>
+                        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="sku" class="form-label">SKU</label>
@@ -114,11 +114,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="form-label">Photo</label>
-                        <input class="form-control" type="file" id="photo">
+                        <input class="form-control" type="file" name="photo" id="photo">
                     </div>
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
-                        <select class="form-select" id="status">
+                        <select class="form-select" id="status" name="status">
                             <option selected>Select Status </option>
                             <option value="nike">Nike</option>
                             <option value="adidas">Adidas</option>
