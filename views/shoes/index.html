@@ -38,6 +38,14 @@
             </div>
         </div>
         <hr>
+
+        {{ if .error }}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ .error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {{ end }}
+
         <table class="table table-bordered mt-2 text-center">
             <thead>
                 <tr>

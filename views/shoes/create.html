@@ -34,6 +34,13 @@
                 <h2 class="text-center">Add Shoe</h2>
                 <hr>
 
+                {{ if .error }}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ .error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {{ end }}
+
                 <form action="/shoe/add" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
