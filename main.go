@@ -6,7 +6,7 @@ import (
 	"shoes-project/config"
 	"shoes-project/controllers/brandcontroller"
 	"shoes-project/controllers/homepage"
-	"shoes-project/controllers/shoes"
+	"shoes-project/controllers/shoecontroller"
 )
 
 func main() {
@@ -22,8 +22,8 @@ func main() {
 	http.HandleFunc("/brand/delete", brandcontroller.Delete)
 
 	// 3. Shoes
-	http.HandleFunc("/shoes", shoes.Index)
-	http.HandleFunc("/shoe/add", shoes.Add)
+	http.HandleFunc("/shoes", shoecontroller.Index)
+	http.HandleFunc("/shoe/add", shoecontroller.Add)
 
 	log.Println("Server running on port 8082")
 	http.ListenAndServe(":8082", nil)

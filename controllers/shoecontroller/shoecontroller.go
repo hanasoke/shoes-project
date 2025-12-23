@@ -1,4 +1,4 @@
-package shoes
+package shoecontroller
 
 import (
 	"html/template"
