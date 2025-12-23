@@ -3,10 +3,14 @@ package shoecontroller
 import (
 	"html/template"
 	"net/http"
+	"shoes-project/models/shoemodel"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	shoes := shoemodel
+	shoes := shoemodel.GetAll
+	data := map[string]any{
+		"shoes": shoes,
+	}
 
 	temp, err := template.ParseFiles("views/shoes/index.html")
 
@@ -14,7 +18,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	temp.Execute(w, nil)
+	temp.Execute(w, data)
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
