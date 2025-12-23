@@ -6,6 +6,8 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	shoes := shoemodel
+
 	temp, err := template.ParseFiles("views/shoes/index.html")
 
 	if err != nil {
