@@ -50,8 +50,10 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 		shoe.Name = r.FormValue("shoe_name")
 		shoe.Brand.Brand_Id = uint(brandId)
-		shoe.Stock = int64(stock)
+		shoe.Type = r.FormValue("shoe_type")
 		shoe.Description = r.FormValue("shoe_description")
+		shoe.Sku = r.FormValue("shoe_sku")
+		shoe.Stock = int64(stock)
 		shoe.CreatedAt = time.Now()
 
 		if ok := shoemodel.Create(shoe); !ok {
