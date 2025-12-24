@@ -55,6 +55,15 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
+func IsSkuExists(sku string) bool {
+	var count int
+	err := config.DB.QueryRow("SELECT COUNT(*) FROM shoes WHERE shoe_sku = ?", sku).Scan(&count)
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 func Create(shoe entities.Shoe) bool {
 	result, err := config.DB.Exec(`
 		INSERT INTO shoes (shoe_name, brand_id, shoe_type, shoe_description, shoe_sku, shoe_price, shoe_stock, created_at)
