@@ -26,13 +26,17 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-
 		temp, err := template.ParseFiles("views/shoes/create.html")
 		if err != nil {
 			panic(err)
 		}
 
-		temp.Execute(w, nil)
+		shoes := shoemodel.GetAll()
+		data := map[string]any{
+			"shoes": shoes,
+		}
+
+		temp.Execute(w, data)
 	}
 
 	if r.Method == "POST" {
@@ -48,11 +52,17 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
+		price, err := strconv.Atoi(r.FormValue("shoe_price"))
+		if err != nil {
+			panic(err)
+		}
+
 		shoe.Name = r.FormValue("shoe_name")
 		shoe.Brand.Brand_Id = uint(brandId)
 		shoe.Type = r.FormValue("shoe_type")
 		shoe.Description = r.FormValue("shoe_description")
 		shoe.Sku = r.FormValue("shoe_sku")
+		shoe.Price = int64(price)
 		shoe.Stock = int64(stock)
 		shoe.CreatedAt = time.Now()
 

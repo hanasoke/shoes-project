@@ -49,30 +49,30 @@
                     <div class="mb-3">
                         <label for="brand_name" class="form-label">Brand</label>
                         <select class="form-select" id="brand_id" name="brand_id">
-                            <option value="">Select Brand </option>
-                            <option value="1">Nike</option>
-                            <option value="2">Adidas</option>
+                            {{ range .brands }}
+                                <option value="{{ .Brand_Id }}">{{ .Brand_Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control" name="type" id="type" autocomplete="off">
+                        <label for="shoe_type" class="form-label">Type</label>
+                        <input type="text" class="form-control" name="shoe_type" id="shoe_type" autocomplete="off">
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                        <label for="shoe_description" class="form-label">Description</label>
+                        <textarea class="form-control" name="shoe_description" id="shoe_description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="sku" class="form-label">SKU</label>
-                        <input type="text" class="form-control" name="sku" id="sku" autocomplete="off">
+                        <label for="shoe_sku" class="form-label">SKU</label>
+                        <input type="text" class="form-control" name="shoe_sku" id="shoe_sku" autocomplete="off">
                     </div>
                     <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
-                        <input type="number" class="form-control" name="price" id="price" autocomplete="off">
+                        <label for="shoe_price" class="form-label">Price</label>
+                        <input type="number" class="form-control" name="shoe_price" id="shoe_price" autocomplete="off">
                     </div>
                     <div class="mb-3">
-                        <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" name="stock" id="stock" autocomplete="off">
+                        <label for="shoe_stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" name="shoe_stock" id="shoe_stock" autocomplete="off">
                     </div>
                     <div class="row">
                         <div class="col">
