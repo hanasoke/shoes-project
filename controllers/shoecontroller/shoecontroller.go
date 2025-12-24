@@ -4,13 +4,14 @@ import (
 	"html/template"
 	"net/http"
 	"shoes-project/entities"
+	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
 	"strconv"
 	"time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	shoes := shoemodel.GetAll
+	shoes := shoemodel.GetAll()
 	data := map[string]any{
 		"shoes": shoes,
 	}
@@ -31,9 +32,9 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		shoes := shoemodel.GetAll()
+		brands := brandmodel.GetAll()
 		data := map[string]any{
-			"shoes": shoes,
+			"brands": brands,
 		}
 
 		temp.Execute(w, data)

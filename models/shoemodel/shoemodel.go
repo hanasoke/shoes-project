@@ -10,7 +10,7 @@ func GetAll() []entities.Shoe {
 		SELECT 
 			shoes.shoe_id, 
 			shoes.shoe_name, 
-			brands.name as brand_name,
+			brands.brand_name,
 			shoes.shoe_type,
 			shoes.shoe_description,
 			shoes.shoe_sku,
@@ -19,7 +19,8 @@ func GetAll() []entities.Shoe {
 			shoes.created_at,
 			shoes.updated_at 
 		FROM shoes 
-		JOIN brands ON shoes.brand_id = brands.brand_id 
+		JOIN brands ON shoes.brand_id = brands.brand_id
+		ORDER BY shoes.created_at DESC 
 	`)
 
 	if err != nil {
