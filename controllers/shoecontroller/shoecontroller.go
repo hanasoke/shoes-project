@@ -6,6 +6,7 @@ import (
 	"shoes-project/entities"
 	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
+	"strconv"
 	"strings"
 )
 
@@ -77,11 +78,25 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if ok := shoemodel.Create(shoe); !ok {
-			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusTemporaryRedirect)
-			return
+		if formData["shoe_price"].(string) == "" {
+			validationErrors["shoe_price"] = "Price is required"
+		} else {
+			price, err := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
+			if err != nil || price <= 0 {
+				validationErrors["shoe_price"] = "Price must be a positive number"
+			}
 		}
 
-		http.Redirect(w, r, "/shoes", http.StatusSeeOther)
+		if formData["shoe_stock"].(string) == "" {
+			validationErrors["shoe_stock"] = "Stock is required"
+		} else {
+			stock, err := strconv.ParseInt(formData["shoe_stock"].(string), 10, 64)
+			if err != nil || stock < 0 {
+				validationErrors["shoe_stock"] = "Stock must be a non-negative number"
+			}
+		}
+
+		// If there are validation errors, show the form again with errors
+
 	}
 }
