@@ -99,7 +99,27 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		// If there are validation errors, show the form again with errors
 		if len(validationErrors) > 0 {
 			temp, err := template.ParseFiles("views/shoes/create.html")
+
+			if err != nil {
+				panic(err)
+			}
+
+			brands := brandmodel.GetAll()
+			data := map[string]any{
+				"brands":    brands,
+				"errors":    validationErrors,
+				"form":      formData,
+				"duplicate": "please fix the validation errors below",
+			}
+
+			temp.Execute(w, data)
+			return
 		}
+
+		// Convert form values after validation
+		brandId, _ := strconv.Atoi(formData["brand_id"].(string))
+		stock, _ := strconv.ParseInt(formData["shoe_stock"].(string), 10, 64)
+		price, _ := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
 
 	}
 }
