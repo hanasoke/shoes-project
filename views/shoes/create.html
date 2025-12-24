@@ -20,7 +20,7 @@
                         <a class="nav-link active text-light" href="/shoes">Shoes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active text-light" href="/brand">Brand</a>
+                        <a class="nav-link active text-light" href="/brands">Brand</a>
                     </li>
                 </ul>
             </div>
@@ -34,49 +34,88 @@
                 <h2 class="text-center">Add Shoe</h2>
                 <hr>
 
+                {{ if .success }}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ .success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {{ end }}
+
                 {{ if .error }}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ .error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ .error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {{ end }}
+
+                {{ if .duplicate }}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ .duplicate }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {{ end }}
 
                 <form action="/shoe/add" method="POST">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" id="name" autocomplete="off">
+                        <label for="shoe_name" class="form-label">Name</label>
+                        <input type="text" class="form-control {{ if .errors.shoe_name }}is-invalid{{ end }}" name="shoe_name" id="shoe_name" autocomplete="off"  value="{{ .form.shoe_name }}">
+                        {{ if .errors.shoe_name }}
+                            <div class="invalid-feedback">{{ .errors.shoe_name }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
-                        <label for="brand_name" class="form-label">Brand</label>
-                        <select class="form-select" id="brand_id" name="brand_id">
+                        <label for="brand_id" class="form-label">Brand</label>
+                        <select class="form-select {{ if .errors.brand_id }}is-invalid{{ end }}" id="brand_id" name="brand_id">
+                            <option value="">Select Brand</option>
                             {{ range .brands }}
-                                <option value="{{ .Brand_Id }}">{{ .Brand_Name }}</option>
+                                <option value="{{ .Brand_Id }}" 
+                                    {{ if eq .Brand_Id $.form.brand_id }}selected{{ end }}>
+                                    {{ .Brand_Name }}
+                                </option>
                             {{ end }}
                         </select>
+                        {{ if .errors.brand_id }}
+                            <div class="invalid-feedback">{{ .errors.brand_id }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="shoe_type" class="form-label">Type</label>
-                        <input type="text" class="form-control" name="shoe_type" id="shoe_type" autocomplete="off">
+                        <input type="text" class="form-control {{ if .errors.shoe_type }}is-invalid{{ end }}" name="shoe_type" id="shoe_type" autocomplete="off" value="{{ .form.shoe_type }}">
+                        {{ if .errors.shoe_type }}
+                            <div class="invalid-feedback">{{ .errors.shoe_type }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="shoe_description" class="form-label">Description</label>
-                        <textarea class="form-control" name="shoe_description" id="shoe_description" rows="3"></textarea>
+                        <textarea class="form-control {{ if .errors.shoe_description }}is-invalid{{ end }}" name="shoe_description" id="shoe_description" rows="3">{{ .form.shoe_description }}</textarea>
+                        {{ if .errors.shoe_description }}
+                            <div class="invalid-feedback">{{ .errors.shoe_description }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="shoe_sku" class="form-label">SKU</label>
-                        <input type="text" class="form-control" name="shoe_sku" id="shoe_sku" autocomplete="off">
+                        <input type="text" class="form-control {{ if .errors.shoe_sku }}is-invalid{{ end }}" name="shoe_sku" id="shoe_sku" autocomplete="off" value="{{ .form.shoe_sku }}">
+                        {{ if .errors.shoe_sku }}
+                            <div class="invalid-feedback">{{ .errors.shoe_sku }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="shoe_price" class="form-label">Price</label>
-                        <input type="number" class="form-control" name="shoe_price" id="shoe_price" autocomplete="off">
+                        <input type="number" class="form-control {{ if .errors.shoe_price }}is-invalid{{ end }}" name="shoe_price" id="shoe_price" autocomplete="off" value="{{ .form.shoe_price }}">
+                        {{ if .errors.shoe_price }}
+                            <div class="invalid-feedback">{{ .errors.shoe_price }}</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="shoe_stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" name="shoe_stock" id="shoe_stock" autocomplete="off">
+                        <input type="number" class="form-control {{ if .errors.shoe_stock }}is-invalid{{ end }}" name="shoe_stock" id="shoe_stock" autocomplete="off" value="{{ .form.shoe_stock }}">
+                        {{ if .errors.shoe_stock }}
+                            <div class="invalid-feedback">{{ .errors.shoe_stock }}</div>
+                        {{ end }}
                     </div>
                     <div class="row">
                         <div class="col">
-                            <a href="/brand" class="btn btn-secondary float-start">Back</a>
+                            <a href="/shoes" class="btn btn-secondary float-start">Back</a>
                         </div>
                         <div class="col">
                             <button type="submit" class="btn btn-primary float-end">Submit</button>
