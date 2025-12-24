@@ -97,6 +97,9 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// If there are validation errors, show the form again with errors
+		if len(validationErrors) > 0 {
+			temp, err := template.ParseFiles("views/shoes/create.html")
+		}
 
 	}
 }
