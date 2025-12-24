@@ -65,9 +65,14 @@ func IsSkuExists(sku string) bool {
 }
 
 func Create(shoe entities.Shoe) bool {
+	// Check for duplicate SKU before insert (additional safety)
+	if IsSkuExists(shoe.Sku) {
+		return false
+	}
+
 	result, err := config.DB.Exec(`
 		INSERT INTO shoes (shoe_name, brand_id, shoe_type, shoe_description, shoe_sku, shoe_price, shoe_stock, created_at)
-	VALUES (?,?,?,?,?,?,,?,?)`,
+	VALUES (?,?,?,?,?,?,?,?)`,
 		shoe.Name,
 		shoe.Brand.Brand_Id,
 		shoe.Type,
@@ -83,10 +88,22 @@ func Create(shoe entities.Shoe) bool {
 	}
 
 	LastInsertId, err := result.LastInsertId()
-	result.LastInsertId()
 	if err != nil {
-		panic(err)
+		return false
 	}
 
 	return LastInsertId > 0
+}
+
+// Additional helper function for duplicate checking
+func FindBySku(sku string) (entities.Shoe, error) {
+	var shoe entities.Shoe
+	err := config.DB.QueryRow(`
+		SELECT shoe_id, shoe_name, shoe_sku
+		FROM shoes WHERE shoe_sku = ?`, sku).Scan(
+		&shoe.Id,
+		&shoe.Name,
+		&shoe.Sku,
+	)
+	return shoe, err
 }
