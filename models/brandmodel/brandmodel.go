@@ -28,13 +28,13 @@ func IsBrandExists(name string) (bool, error) {
 }
 
 func IsBrandExistsExceptID(name string, id int) (bool, error) {
-	var brandID int
+	var Id int
 	err := config.DB.QueryRow(`
 		SELECT id FROM brands 
 		WHERE name = ? AND id != ?
 		LIMIT 1`,
 		name, id,
-	).Scan(&brandID)
+	).Scan(&Id)
 
 	if err == sql.ErrNoRows {
 		return false, nil
