@@ -3,12 +3,12 @@ package entities
 import "time"
 
 type Shoe struct {
-	Id          uint
+	ID          uint
 	Name        string
-	Brand       Brand
+	Brand_Name  string
 	Type        string
 	Description string
-	Sku         string
+	SKU         string
 	Price       int64
 	Stock       int64
 	CreatedAt   time.Time
