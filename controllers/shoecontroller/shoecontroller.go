@@ -12,14 +12,16 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-
-	temp, err := template.ParseFiles("views/shoes/index.html")
-
-	if err != nil {
-		panic(err)
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int {
+			return a + b
+		},
 	}
 
-	temp.Execute(w, nil)
+	t := template.New("index.html").Funcs(funcMap)
+	t = template.Must(t.ParseFiles("views/shoes/index.html"))
+
+	t.Execute(w, nil)
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
@@ -119,13 +121,13 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		price, _ := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
 
 		// Create shoe entity
-		shoe.Name = formData["shoe_name"].(string)
-		shoe.Brand.Brand_Id = uint(brandId)
-		shoe.Type = formData["shoe_type"].(string)
-		shoe.Description = formData["shoe_description"].(string)
-		shoe.Sku = formData["shoe_sku"].(string)
-		shoe.Price = price
-		shoe.Stock = stock
+		shoe.Shoe_Name = formData["shoe_name"].(string)
+		shoe.Shoe_Brand.Brand_Id = uint(brandId)
+		shoe.Shoe_Type = formData["shoe_type"].(string)
+		shoe.Shoe_Description = formData["shoe_description"].(string)
+		shoe.Shoe_Sku = formData["shoe_sku"].(string)
+		shoe.Shoe_Price = price
+		shoe.Shoe_Stock = stock
 		shoe.CreatedAt = time.Now()
 
 		// Create shoe in database
