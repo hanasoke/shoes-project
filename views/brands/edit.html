@@ -43,7 +43,7 @@
 
 
                 <form action="/brand/edit" method="POST">
-                    <input type="hidden" name="brand_id" value="{{ .brand.Id }}">
+                    <input type="hidden" name="id" value="{{ .brand.Id }}">
                     <div class="mb-3">
                         <label for="brand_name" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name" id="name" value="{{ .brand.Name }}" autocomplete="off">

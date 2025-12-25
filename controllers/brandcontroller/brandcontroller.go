@@ -93,13 +93,13 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		idString := r.URL.Query().Get("brand_id")
-		brand_id, err := strconv.Atoi(idString)
+		idString := r.URL.Query().Get("id")
+		id, err := strconv.Atoi(idString)
 		if err != nil {
 			panic(err)
 		}
 
-		brand := brandmodel.Detail(brand_id)
+		brand := brandmodel.Detail(id)
 		data := map[string]any{
 			"brand": brand,
 		}
@@ -108,14 +108,14 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		idString := r.FormValue("brand_id")
-		brand_id, _ := strconv.Atoi(idString)
+		idString := r.FormValue("id")
+		id, _ := strconv.Atoi(idString)
 
 		brandName := strings.TrimSpace(r.FormValue("name"))
 
 		// ❌ NULL validation
 		if brandName == "" {
-			brand := brandmodel.Detail(brand_id)
+			brand := brandmodel.Detail(id)
 			data := map[string]any{
 				"brand": brand,
 				"error": "Brand name cannot be empty",
@@ -131,7 +131,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			UpdatedAt: time.Now(),
 		}
 
-		err := brandmodel.Update(brand_id, brand)
+		err := brandmodel.Update(id, brand)
 		if err != nil {
 			msg := "Failed to update brand"
 
@@ -139,7 +139,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 				msg = "Brand name already exists"
 			}
 
-			oldBrand := brandmodel.Detail(brand_id)
+			oldBrand := brandmodel.Detail(id)
 			data := map[string]any{
 				"brand": oldBrand,
 				"error": msg,
@@ -155,13 +155,13 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
-	idString := r.URL.Query().Get("brand_id")
-	brand_id, err := strconv.Atoi(idString)
+	idString := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idString)
 	if err != nil {
 		panic(err)
 	}
 
-	if err := brandmodel.Delete(brand_id); err != nil {
+	if err := brandmodel.Delete(id); err != nil {
 		panic(err)
 	}
 

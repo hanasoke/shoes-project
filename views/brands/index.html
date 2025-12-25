@@ -60,7 +60,7 @@
                     <td class="text-center">{{ add $i 1 }}</td>
                     <td>{{ $b.Name }}</td>
                     <td class="text-center">
-                        <a href="/brand/edit?brand_id={{ $b.Id }}" class="btn btn-info">Edit</a>
+                        <a href="/brand/edit?id={{ $b.Id }}" class="btn btn-info">Edit</a>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $b.Id }}">Delete</button>
                     </td>
                 </tr>
@@ -78,7 +78,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <a href="/brand/delete?brand_id={{ $b.Id }}" class="btn btn-danger">Delete</a>
+                            <a href="/brand/delete?id={{ $b.Id }}" class="btn btn-danger">Delete</a>
                         </div>
                         </div>
                     </div>
