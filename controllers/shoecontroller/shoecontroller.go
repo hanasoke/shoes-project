@@ -151,7 +151,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Success - redirect with success message
-		temp, err := template.ParseFiles("views/shoes/create.html")
+		temp, err := template.ParseFiles("views/shoes/index.html")
 		if err != nil {
 			panic(err)
 		}
