@@ -58,15 +58,15 @@
                 {{ range $i, $b := .brands }}
                 <tr>
                     <td class="text-center">{{ add $i 1 }}</td>
-                    <td>{{ $b.Brand_Name }}</td>
+                    <td>{{ $b.Name }}</td>
                     <td class="text-center">
-                        <a href="/brand/edit?brand_id={{ $b.Brand_Id }}" class="btn btn-info">Edit</a>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $b.Brand_Id }}">Delete</button>
+                        <a href="/brand/edit?brand_id={{ $b.Id }}" class="btn btn-info">Edit</a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $b.Id }}">Delete</button>
                     </td>
                 </tr>
 
                 <!-- Modal -->
-                <div class="modal fade" id="delete{{ $b.Brand_Id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="delete{{ $b.Id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                         <div class="modal-header">
@@ -74,11 +74,11 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure want to delete <strong>{{ $b.Brand_Name }}</strong>
+                            Are you sure want to delete <strong>{{ $b.Name }}</strong>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <a href="/brand/delete?brand_id={{ $b.Brand_Id }}" class="btn btn-danger">Delete</a>
+                            <a href="/brand/delete?brand_id={{ $b.Id }}" class="btn btn-danger">Delete</a>
                         </div>
                         </div>
                     </div>
