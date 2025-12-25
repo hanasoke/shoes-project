@@ -8,6 +8,7 @@ import (
 	"shoes-project/models/shoemodel"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -121,5 +122,49 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		stock, _ := strconv.ParseInt(formData["shoe_stock"].(string), 10, 64)
 		price, _ := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
 
+		// Create shoe entity
+		shoe.Name = formData["shoe_name"].(string)
+		shoe.Brand.Brand_Id = uint(brandId)
+		shoe.Type = formData["shoe_type"].(string)
+		shoe.Description = formData["shoe_description"].(string)
+		shoe.Sku = formData["shoe_sku"].(string)
+		shoe.Price = price
+		shoe.Stock = stock
+		shoe.CreatedAt = time.Now()
+
+		// Create shoe in database
+		if ok := shoemodel.Create(shoe); !ok {
+			// If creation fails, show error
+			temp, err := template.ParseFiles("views/shoes/create.html")
+
+			if err != nil {
+				panic(err)
+			}
+
+			brands := brandmodel.GetAll()
+			data := map[string]any{
+				"brands": brands,
+				"error":  "Failed to create shoe. Please try again.",
+				"form":   formData,
+			}
+
+			temp.Execute(w, data)
+			return
+		}
+
+		// Success - redirect with success message
+		temp, err := template.ParseFiles("views/shoes/create.html")
+		if err != nil {
+			panic(err)
+		}
+
+		brands := brandmodel.GetAll()
+		data := map[string]any{
+			"brands":  brands,
+			"success": "Shoe created successfully!",
+			"form":    make(map[string]interface{}), // Clear form
+		}
+
+		temp.Execute(w, data)
 	}
 }
