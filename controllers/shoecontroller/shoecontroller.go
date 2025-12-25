@@ -45,53 +45,53 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		var formData = make(map[string]interface{})
 
 		// Store form data for re-population
-		formData["shoe_name"] = strings.TrimSpace(r.FormValue("shoe_name"))
+		formData["name"] = strings.TrimSpace(r.FormValue("name"))
 		formData["brand_id"] = r.FormValue("brand_id")
-		formData["shoe_type"] = strings.TrimSpace(r.FormValue("shoe_type"))
-		formData["shoe_description"] = strings.TrimSpace(r.FormValue("shoe_description"))
-		formData["shoe_sku"] = strings.TrimSpace(r.FormValue("shoe_sku"))
-		formData["shoe_price"] = r.FormValue("shoe_price")
-		formData["shoe_stock"] = r.FormValue("shoe_stock")
+		formData["type"] = strings.TrimSpace(r.FormValue("type"))
+		formData["description"] = strings.TrimSpace(r.FormValue("description"))
+		formData["sku"] = strings.TrimSpace(r.FormValue("sku"))
+		formData["price"] = r.FormValue("price")
+		formData["stock"] = r.FormValue("stock")
 
 		// Validate required fields
-		if formData["shoe_name"].(string) == "" {
-			validationErrors["shoe_name"] = "Shoe name is required"
-		} else if len(formData["shoe_name"].(string)) > 100 {
-			validationErrors["shoe_name"] = "Shoe name cannot exceed 100 characters"
+		if formData["name"].(string) == "" {
+			validationErrors["name"] = "Shoe name is required"
+		} else if len(formData["name"].(string)) > 100 {
+			validationErrors["name"] = "Shoe name cannot exceed 100 characters"
 		}
 
 		if formData["brand_id"].(string) == "" {
 			validationErrors["brand_id"] = "Brand is required"
 		}
 
-		if formData["shoe_type"].(string) == "" {
-			validationErrors["shoe_type"] = "Shoe type is required"
+		if formData["type"].(string) == "" {
+			validationErrors["type"] = "Shoe type is required"
 		}
 
-		if formData["shoe_sku"].(string) == "" {
-			validationErrors["shoe_sku"] = "SKU is required"
+		if formData["sku"].(string) == "" {
+			validationErrors["sku"] = "SKU is required"
 		} else {
 			// Check for duplicate SKU
-			if shoemodel.IsSkuExists(formData["shoe_sku"].(string)) {
-				validationErrors["shoe_sku"] = "SKU already exists"
+			if shoemodel.IsSkuExists(formData["sku"].(string)) {
+				validationErrors["sku"] = "SKU already exists"
 			}
 		}
 
-		if formData["shoe_price"].(string) == "" {
-			validationErrors["shoe_price"] = "Price is required"
+		if formData["price"].(string) == "" {
+			validationErrors["price"] = "Price is required"
 		} else {
-			price, err := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
+			price, err := strconv.ParseInt(formData["price"].(string), 10, 64)
 			if err != nil || price <= 0 {
-				validationErrors["shoe_price"] = "Price must be a positive number"
+				validationErrors["price"] = "Price must be a positive number"
 			}
 		}
 
-		if formData["shoe_stock"].(string) == "" {
-			validationErrors["shoe_stock"] = "Stock is required"
+		if formData["stock"].(string) == "" {
+			validationErrors["stock"] = "Stock is required"
 		} else {
-			stock, err := strconv.ParseInt(formData["shoe_stock"].(string), 10, 64)
+			stock, err := strconv.ParseInt(formData["stock"].(string), 10, 64)
 			if err != nil || stock < 0 {
-				validationErrors["shoe_stock"] = "Stock must be a non-negative number"
+				validationErrors["stock"] = "Stock must be a non-negative number"
 			}
 		}
 
@@ -117,17 +117,17 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 		// Convert form values after validation
 		brandId, _ := strconv.Atoi(formData["brand_id"].(string))
-		stock, _ := strconv.ParseInt(formData["shoe_stock"].(string), 10, 64)
-		price, _ := strconv.ParseInt(formData["shoe_price"].(string), 10, 64)
+		stock, _ := strconv.ParseInt(formData["stock"].(string), 10, 64)
+		price, _ := strconv.ParseInt(formData["price"].(string), 10, 64)
 
 		// Create shoe entity
-		shoe.Shoe_Name = formData["shoe_name"].(string)
-		shoe.Shoe_Brand.Brand_Id = uint(brandId)
-		shoe.Shoe_Type = formData["shoe_type"].(string)
-		shoe.Shoe_Description = formData["shoe_description"].(string)
-		shoe.Shoe_Sku = formData["shoe_sku"].(string)
-		shoe.Shoe_Price = price
-		shoe.Shoe_Stock = stock
+		shoe.Name = formData["name"].(string)
+		shoe.Brand.Id = uint(brandId)
+		shoe.Type = formData["type"].(string)
+		shoe.Description = formData["description"].(string)
+		shoe.Sku = formData["sku"].(string)
+		shoe.Price = price
+		shoe.Stock = stock
 		shoe.CreatedAt = time.Now()
 
 		// Create shoe in database

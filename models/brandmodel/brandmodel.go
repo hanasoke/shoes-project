@@ -12,7 +12,7 @@ var ErrDuplicateBrand = errors.New("brand already exists")
 func IsBrandExists(name string) (bool, error) {
 	var id uint
 	err := config.DB.QueryRow(
-		"SELECT brand_id FROM brands WHERE brand_name = ? LIMIT 1",
+		"SELECT id FROM brands WHERE name = ? LIMIT 1",
 		name,
 	).Scan(&id)
 
@@ -30,8 +30,8 @@ func IsBrandExists(name string) (bool, error) {
 func IsBrandExistsExceptID(name string, id int) (bool, error) {
 	var brandID int
 	err := config.DB.QueryRow(`
-		SELECT brand_id FROM brands 
-		WHERE brand_name = ? AND brand_id != ?
+		SELECT id FROM brands 
+		WHERE name = ? AND id != ?
 		LIMIT 1`,
 		name, id,
 	).Scan(&brandID)
@@ -59,7 +59,7 @@ func GetAll() []entities.Brand {
 
 	for rows.Next() {
 		var brand entities.Brand
-		if err := rows.Scan(&brand.Brand_Id, &brand.Brand_Name, &brand.CreatedAt, &brand.UpdatedAt); err != nil {
+		if err := rows.Scan(&brand.Id, &brand.Name, &brand.CreatedAt, &brand.UpdatedAt); err != nil {
 			panic(err)
 		}
 
@@ -70,7 +70,7 @@ func GetAll() []entities.Brand {
 }
 
 func Create(brand entities.Brand) error {
-	exists, err := IsBrandExists(brand.Brand_Name)
+	exists, err := IsBrandExists(brand.Name)
 	if err != nil {
 		return err
 	}
@@ -80,9 +80,9 @@ func Create(brand entities.Brand) error {
 	}
 
 	_, err = config.DB.Exec(`
-		INSERT INTO brands (brand_name, created_at, updated_at)
+		INSERT INTO brands (name, created_at, updated_at)
 		VALUES (?, ?, ?)`,
-		brand.Brand_Name,
+		brand.Name,
 		brand.CreatedAt,
 		brand.UpdatedAt,
 	)
@@ -90,19 +90,19 @@ func Create(brand entities.Brand) error {
 	return err
 }
 
-func Detail(brand_id int) entities.Brand {
-	row := config.DB.QueryRow(`SELECT brand_id, brand_name FROM brands WHERE brand_id = ?`, brand_id)
+func Detail(id int) entities.Brand {
+	row := config.DB.QueryRow(`SELECT id, name FROM brands WHERE id = ?`, id)
 
 	var brand entities.Brand
-	if err := row.Scan(&brand.Brand_Id, &brand.Brand_Name); err != nil {
+	if err := row.Scan(&brand.Id, &brand.Name); err != nil {
 		panic(err.Error())
 	}
 
 	return brand
 }
 
-func Update(brand_id int, brand entities.Brand) error {
-	exists, err := IsBrandExistsExceptID(brand.Brand_Name, brand_id)
+func Update(id int, brand entities.Brand) error {
+	exists, err := IsBrandExistsExceptID(brand.Name, id)
 	if err != nil {
 		return err
 	}
@@ -113,17 +113,17 @@ func Update(brand_id int, brand entities.Brand) error {
 
 	_, err = config.DB.Exec(`
 		UPDATE brands 
-		SET brand_name = ?, updated_at = ?
-		WHERE brand_id = ?`,
-		brand.Brand_Name,
+		SET name = ?, updated_at = ?
+		WHERE id = ?`,
+		brand.Name,
 		brand.UpdatedAt,
-		brand_id,
+		id,
 	)
 
 	return err
 }
 
-func Delete(brand_id int) error {
-	_, err := config.DB.Exec(`DELETE FROM brands WHERE brand_id = ?`, brand_id)
+func Delete(id int) error {
+	_, err := config.DB.Exec(`DELETE FROM brands WHERE id = ?`, id)
 	return err
 }

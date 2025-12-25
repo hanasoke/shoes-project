@@ -40,7 +40,7 @@ func GetAll() []entities.Shoe {
 
 	for rows.Next() {
 		var shoe entities.Shoe
-		if err := rows.Scan(&shoe.Shoe_Id, &shoe.Shoe_Name, &shoe.Shoe_Brand.Brand_Name, &shoe.Shoe_Type, &shoe.Shoe_Description, &shoe.Shoe_Sku, &shoe.Shoe_Price, &shoe.Shoe_Stock, &shoe.CreatedAt, &shoe.UpdatedAt); err != nil {
+		if err := rows.Scan(&shoe.Id, &shoe.Name, &shoe.Brand.Name, &shoe.Type, &shoe.Description, &shoe.Sku, &shoe.Price, &shoe.Stock, &shoe.CreatedAt, &shoe.UpdatedAt); err != nil {
 			panic(err)
 		}
 
@@ -52,20 +52,20 @@ func GetAll() []entities.Shoe {
 
 func Create(shoe entities.Shoe) bool {
 	// Check for duplicate SKU before insert (additional safety)
-	if IsSkuExists(shoe.Shoe_Sku) {
+	if IsSkuExists(shoe.Sku) {
 		return false
 	}
 
 	result, err := config.DB.Exec(`
-		INSERT INTO shoes (shoe_name, brand_id, shoe_type, shoe_description, shoe_sku, shoe_price, shoe_stock, created_at)
+		INSERT INTO shoes (name, brand_id, shoe_type, shoe_description, shoe_sku, shoe_price, shoe_stock, created_at)
 	VALUES (?,?,?,?,?,?,?,?)`,
-		shoe.Shoe_Name,
-		shoe.Shoe_Brand.Brand_Id,
-		shoe.Shoe_Type,
-		shoe.Shoe_Description,
-		shoe.Shoe_Sku,
-		shoe.Shoe_Price,
-		shoe.Shoe_Stock,
+		shoe.Name,
+		shoe.Brand.Id,
+		shoe.Type,
+		shoe.Description,
+		shoe.Sku,
+		shoe.Price,
+		shoe.Stock,
 		shoe.CreatedAt,
 	)
 
@@ -85,11 +85,11 @@ func Create(shoe entities.Shoe) bool {
 func FindBySku(sku string) (entities.Shoe, error) {
 	var shoe entities.Shoe
 	err := config.DB.QueryRow(`
-		SELECT shoe_id, shoe_name, shoe_sku
-		FROM shoes WHERE shoe_sku = ?`, sku).Scan(
-		&shoe.Shoe_Id,
-		&shoe.Shoe_Name,
-		&shoe.Shoe_Sku,
+		SELECT id, name, sku
+		FROM shoes WHERE sku = ?`, sku).Scan(
+		&shoe.Id,
+		&shoe.Name,
+		&shoe.Sku,
 	)
 	return shoe, err
 }

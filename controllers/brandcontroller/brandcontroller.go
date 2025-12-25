@@ -49,7 +49,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		brandName := r.FormValue("brand_name")
+		brandName := r.FormValue("name")
 
 		// 1️⃣ NULL / empty validation
 		if brandName == "" {
@@ -62,8 +62,8 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		brand := entities.Brand{
-			Brand_Name: brandName,
-			CreatedAt:  time.Now(),
+			Name:      brandName,
+			CreatedAt: time.Now(),
 		}
 
 		err := brandmodel.Create(brand)
@@ -111,7 +111,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		idString := r.FormValue("brand_id")
 		brand_id, _ := strconv.Atoi(idString)
 
-		brandName := strings.TrimSpace(r.FormValue("brand_name"))
+		brandName := strings.TrimSpace(r.FormValue("name"))
 
 		// ❌ NULL validation
 		if brandName == "" {
@@ -127,8 +127,8 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		}
 
 		brand := entities.Brand{
-			Brand_Name: brandName,
-			UpdatedAt:  time.Now(),
+			Name:      brandName,
+			UpdatedAt: time.Now(),
 		}
 
 		err := brandmodel.Update(brand_id, brand)
