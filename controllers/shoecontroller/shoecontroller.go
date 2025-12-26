@@ -3,6 +3,7 @@ package shoecontroller
 import (
 	"html/template"
 	"net/http"
+	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
 )
 
@@ -21,10 +22,17 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
-	temp, err := template.ParseFiles("views/shoes/create.html")
-	if err != nil {
-		panic(err)
-	}
+	if r.Method == "GET" {
+		temp, err := template.ParseFiles("views/shoes/create.html")
+		if err != nil {
+			panic(err)
+		}
 
-	temp.Execute(w, nil)
+		brands := brandmodel.GetAll()
+		data := map[string]any{
+			"brands": brands,
+		}
+
+		temp.Execute(w, data)
+	}
 }

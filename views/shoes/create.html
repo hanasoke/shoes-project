@@ -42,7 +42,9 @@
                     <div class="mb-3">
                         <label for="brand_id" class="form-label">Brand</label>
                         <select class="form-select" id="brand_id" name="brand_id">
-                            <option value="">Select Brand</option>
+                            {{ range .brands }}
+                                <option value="{{ .Id }}">{{ .Name }}</option>
+                            {{ end }}
                         </select>
                     </div>
                     <div class="mb-3">
