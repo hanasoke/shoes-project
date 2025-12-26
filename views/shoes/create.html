@@ -36,12 +36,12 @@
 
                 <form action="/shoe/add" method="POST">
                     <div class="mb-3">
-                        <label for="shoe_name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="shoe_name" id="shoe_name" autocomplete="off"  value="#">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" autocomplete="off"  value="#">
                     </div>
                     <div class="mb-3">
-                        <label for="brand_id" class="form-label">Brand</label>
-                        <select class="form-select" id="brand_id" name="brand_id">
+                        <label for="id_brand" class="form-label">Brand</label>
+                        <select class="form-select" id="id_brand" name="id_brand">
                             {{ range .brands }}
                                 <option value="{{ .Id }}">{{ .Name }}</option>
                             {{ end }}
