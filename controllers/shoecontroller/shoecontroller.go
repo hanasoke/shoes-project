@@ -11,17 +11,34 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	funcMap := template.FuncMap{
+		"add": func(a, b int) int {
+			return a + b
+		},
+	}
+
+	success := ""
+
+	switch r.URL.Query().Get("success") {
+	case "created":
+		success = "Brand created successfully"
+	case "updated":
+		success = "Brand updated successfully"
+	case "deleted":
+		success = "Brand deleted successfully"
+
+	}
+
 	shoes := shoemodel.GetAll()
 	data := map[string]any{
-		"shoes": shoes,
+		"shoes":   shoes,
+		"success": success,
 	}
 
-	temp, err := template.ParseFiles("views/shoes/index.html")
-	if err != nil {
-		panic(err)
-	}
+	t := template.New("index.html").Funcs(funcMap)
+	t = template.Must(t.ParseFiles("views/shoes/index.html"))
 
-	temp.Execute(w, data)
+	t.Execute(w, data)
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {

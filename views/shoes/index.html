@@ -39,9 +39,10 @@
         </div>
         <hr>
 
-        <table class="table table-bordered mt-2 text-center">
+        <table class="table table-bordered mt-2">
             <thead>
-                <tr>
+                <tr class="text-center">
+                    <th>No</th>
                     <th>Name</th>
                     <th>Brand</th>
                     <th>Type</th>
@@ -53,28 +54,20 @@
                 </tr>
             </thead>
             <tbody>
-                {{ range .shoes }}
+                {{ range $i, $shoe := .shoes }}
                     <tr>
+                        <td class="text-center">{{ add $i 1 }}</td>
+                        <td>{{ $shoe.Name }}</td>
+                        <td>{{ $shoe.Brand.Name }}</td>
+                        <td>{{ $shoe.Type }}</td>
+                        <td>{{ $shoe.Description }}</td>
+                        <td>{{ $shoe.SKU }}</td>
+                        <td>{{ $shoe.Price }}</td>
+                        <td>{{ $shoe.Stock }}</td>
                         <td>
-                            {{ .Name }}
-                        </td>
-                        <td>
-                            {{ .Brand.Name }}
-                        </td>
-                        <td>
-                            {{ .Type }}
-                        </td>
-                        <td>
-                            {{ .Description }}
-                        </td>
-                        <td>
-                            {{ .SKU }}
-                        </td>
-                        <td>
-                            {{ .Price }}
-                        </td>
-                        <td>
-                            {{ .Stock }}
+                            <!-- Add your action buttons here -->
+                            <a href="/shoe/edit?id={{ $shoe.Id }}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/shoe/delete?id={{ $shoe.Id }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
                         </td>
                     </tr>
                 {{ end }}

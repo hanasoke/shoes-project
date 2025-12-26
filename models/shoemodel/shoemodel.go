@@ -33,6 +33,7 @@ func GetAll() []entities.Shoe {
 	for rows.Next() {
 		var shoe entities.Shoe
 		var brand entities.Brand
+
 		err := rows.Scan(
 			&shoe.Id,
 			&shoe.Name,
