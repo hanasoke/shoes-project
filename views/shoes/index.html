@@ -54,8 +54,15 @@
                 </tr>
             </thead>
             <tbody>
-                {{ range $i, $s := .shoes }}
-                    
+                {{ range .shoes }}
+                    <tr>
+                        <td>
+                            {{ .Name }}
+                        </td>
+                        <td>
+                            {{ .Brand.Name }}
+                        </td>
+                    </tr>
                 {{ end }}
             </tbody>
         </table>
