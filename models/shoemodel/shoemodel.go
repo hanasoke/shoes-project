@@ -54,10 +54,30 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
-// func Create(shoe entities.Shoe) bool {
-// 	result, err := config.DB.Exec(`
-// 		INSERT INTO shoes(
+func Create(shoe entities.Shoe) bool {
+	result, err := config.DB.Exec(`
+		INSERT INTO shoes(
+			name, id_brand, type, description, sku, price, stock, created_at 
+		) VALUES (?,?,?,?,?,?,?,?)`,
+		shoe.Name,
+		shoe.Brand.Id,
+		shoe.Type,
+		shoe.Description,
+		shoe.SKU,
+		shoe.Price,
+		shoe.Stock,
+		shoe.CreatedAt,
+	)
 
-// 		) VALUES ()
-// 	`)
-// }
+	if err != nil {
+		panic(err)
+	}
+
+	LastInsertId, err := result.LastInsertId()
+	result.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+
+	return LastInsertId > 0
+}
