@@ -23,7 +23,7 @@ func main() {
 
 	// 3. Shoes
 	http.HandleFunc("/shoes", shoecontroller.Index)
-	// http.HandleFunc("/shoe/add", shoecontroller.Add)
+	http.HandleFunc("/shoe/add", shoecontroller.Add)
 
 	log.Println("Server running on port 8082")
 	http.ListenAndServe(":8082", nil)

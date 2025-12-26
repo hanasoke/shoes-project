@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type Shoe struct {
-	ID          uint
+	Id          uint
 	Name        string
-	Brand_Name  string
+	Brand       Brand
 	Type        string
 	Description string
 	SKU         string
