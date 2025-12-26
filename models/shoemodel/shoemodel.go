@@ -7,15 +7,17 @@ import (
 
 func GetAll() []entities.Shoe {
 	rows, err := config.DB.Query(`
-		SELECT 		
+		SELECT 
+			shoes.id,		
 			shoes.name,
-			brands.name as brand_name,
+			brands.name,
 			shoes.type,
 			shoes.description,
 			shoes.sku,
 			shoes.price,
 			shoes.stock,
-			shoes.created_at
+			shoes.created_at,
+			brands.id as id_brand
 		FROM shoes
 		JOIN brands ON shoes.id_brand = brands.id
 	`)
@@ -30,22 +32,25 @@ func GetAll() []entities.Shoe {
 
 	for rows.Next() {
 		var shoe entities.Shoe
+		var brand entities.Brand
 		err := rows.Scan(
 			&shoe.Id,
 			&shoe.Name,
-			&shoe.Brand.Name,
+			&brand.Name, // Brand name
 			&shoe.Type,
 			&shoe.Description,
 			&shoe.SKU,
 			&shoe.Price,
 			&shoe.Stock,
 			&shoe.CreatedAt,
+			&brand.Id, // Brand ID
 		)
 
 		if err != nil {
 			panic(err)
 		}
 
+		shoe.Brand = brand
 		shoes = append(shoes, shoe)
 	}
 
