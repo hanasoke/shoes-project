@@ -15,8 +15,7 @@ func GetAll() []entities.Shoe {
 			shoes.sku,
 			shoes.price,
 			shoes.stock,
-			shoes.created_at,
-			shoes.updated_at
+			shoes.created_at
 		FROM shoes
 		JOIN brands ON shoes.id_brand = brands.id
 	`)
@@ -41,7 +40,6 @@ func GetAll() []entities.Shoe {
 			&shoe.Price,
 			&shoe.Stock,
 			&shoe.CreatedAt,
-			&shoe.UpdatedAt,
 		)
 
 		if err != nil {

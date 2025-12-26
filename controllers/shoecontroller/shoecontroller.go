@@ -65,7 +65,6 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		shoe.Price = int64(price)
 		shoe.Stock = int64(stock)
 		shoe.CreatedAt = time.Now()
-		shoe.UpdatedAt = time.Now()
 
 		if ok := shoemodel.Create(shoe); !ok {
 			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusTemporaryRedirect)
