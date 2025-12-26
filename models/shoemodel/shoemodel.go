@@ -8,8 +8,8 @@ import (
 func GetAll() []entities.Shoe {
 	rows, err := config.DB.Query(`
 		SELECT 		
-			shoes.name
-			brands.name as brand_name
+			shoes.name,
+			brands.name as brand_name,
 			shoes.type,
 			shoes.description,
 			shoes.sku,
