@@ -1,6 +1,7 @@
 package shoemodel
 
 import (
+	"database/sql"
 	"shoes-project/config"
 	"shoes-project/entities"
 )
@@ -56,6 +57,28 @@ func GetAll() []entities.Shoe {
 	}
 
 	return shoes
+}
+
+// Check if SKU already exists (duplicate validation)
+func IsSKUExists(sku string, excludeId uint) bool {
+	var query string
+	var args []interface{}
+
+	if excludeId > 0 {
+		query = "SELECT COUNT(*) FROM shoes WHERE sku = ? AND id != ?"
+		args = []interface{}{sku, excludeId}
+	} else {
+		query = "SELECT COUNT(*) FROM shoes WHERE sku = ?"
+		args = []interface{}{sku}
+	}
+
+	var count int
+	err := config.DB.QueryRow(query, args...).Scan(&count)
+	if err != nil && err != sql.ErrNoRows {
+		panic(err)
+	}
+
+	return count > 0
 }
 
 func Create(shoe entities.Shoe) bool {
