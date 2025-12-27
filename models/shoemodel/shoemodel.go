@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"shoes-project/config"
 	"shoes-project/entities"
+	"strings"
 )
 
 func GetAll() []entities.Shoe {
@@ -107,6 +108,21 @@ func IsNameExists(name string, excludeId uint) bool {
 type ValidationError struct {
 	Field   string
 	Message string
+}
+
+// Validate shoe data
+func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationError {
+	var errors []ValidationError
+
+	// Check for empty name
+	if strings.TrimSpace(shoe.Name) == "" {
+		errors = append(errors, ValidationError{
+			Field:   "name",
+			Message: "Name is required",
+		})
+	}
+
+	return nil
 }
 
 func Create(shoe entities.Shoe) bool {
