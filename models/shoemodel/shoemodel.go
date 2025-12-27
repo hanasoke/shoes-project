@@ -103,6 +103,12 @@ func IsNameExists(name string, excludeId uint) bool {
 	return count > 0
 }
 
+// Validation struct
+type ValidationError struct {
+	Field   string
+	Message string
+}
+
 func Create(shoe entities.Shoe) bool {
 	result, err := config.DB.Exec(`
 		INSERT INTO shoes(
