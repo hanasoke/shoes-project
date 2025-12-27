@@ -81,6 +81,28 @@ func IsSKUExists(sku string, excludeId uint) bool {
 	return count > 0
 }
 
+// Check if name already exists
+func IsNameExists(name string, excludeId uint) bool {
+	var query string
+	var args []interface{}
+
+	if excludeId > 0 {
+		query = "SELECT COUNT(*) FROM shoes WHERE name = ? AND id != ?"
+		args = []interface{}{name, excludeId}
+	} else {
+		query = "SELECT COUNT(*) FROM shoes WHERE name = ?"
+		args = []interface{}{name}
+	}
+
+	var count int
+	err := config.DB.QueryRow(query, args...).Scan(&count)
+	if err != nil && err != sql.ErrNoRows {
+		panic(err)
+	}
+
+	return count > 0
+}
+
 func Create(shoe entities.Shoe) bool {
 	result, err := config.DB.Exec(`
 		INSERT INTO shoes(
