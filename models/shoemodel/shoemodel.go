@@ -120,6 +120,11 @@ func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationEr
 			Field:   "name",
 			Message: "Name is required",
 		})
+	} else if IsNameExists(shoe.Name, shoeId) {
+		errors = append(errors, ValidationError{
+			Field:   "name",
+			Message: "Shoe name already exists",
+		})
 	}
 
 	return nil
