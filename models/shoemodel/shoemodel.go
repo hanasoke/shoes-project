@@ -1,10 +1,8 @@
 package shoemodel
 
 import (
-	"database/sql"
 	"shoes-project/config"
 	"shoes-project/entities"
-	"strings"
 )
 
 func GetAll() []entities.Shoe {
@@ -60,149 +58,7 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
-// Check if SKU already exists (duplicate validation)
-func IsSKUExists(sku string, excludeId uint) bool {
-	var query string
-	var args []interface{}
+// func Create(shoe entities.Shoe) (bool, []ValidationError) {
 
-	if excludeId > 0 {
-		query = "SELECT COUNT(*) FROM shoes WHERE sku = ? AND id != ?"
-		args = []interface{}{sku, excludeId}
-	} else {
-		query = "SELECT COUNT(*) FROM shoes WHERE sku = ?"
-		args = []interface{}{sku}
-	}
-
-	var count int
-	err := config.DB.QueryRow(query, args...).Scan(&count)
-	if err != nil && err != sql.ErrNoRows {
-		panic(err)
-	}
-
-	return count > 0
-}
-
-// Check if name already exists
-func IsNameExists(name string, excludeId uint) bool {
-	var query string
-	var args []interface{}
-
-	if excludeId > 0 {
-		query = "SELECT COUNT(*) FROM shoes WHERE name = ? AND id != ?"
-		args = []interface{}{name, excludeId}
-	} else {
-		query = "SELECT COUNT(*) FROM shoes WHERE name = ?"
-		args = []interface{}{name}
-	}
-
-	var count int
-	err := config.DB.QueryRow(query, args...).Scan(&count)
-	if err != nil && err != sql.ErrNoRows {
-		panic(err)
-	}
-
-	return count > 0
-}
-
-// Validation struct
-type ValidationError struct {
-	Field   string
-	Message string
-}
-
-// Validate shoe data
-func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationError {
-	var errors []ValidationError
-
-	// Check for empty name
-	if strings.TrimSpace(shoe.Name) == "" {
-		errors = append(errors, ValidationError{
-			Field:   "name",
-			Message: "Name is required",
-		})
-	} else if IsNameExists(shoe.Name, shoeId) {
-		errors = append(errors, ValidationError{
-			Field:   "name",
-			Message: "Shoe name already exists",
-		})
-	}
-
-	// Check brand selection
-	if shoe.Brand.Id == 0 {
-		errors = append(errors, ValidationError{
-			Field:   "brand",
-			Message: "Please select a brand",
-		})
-	}
-
-	// Check for empty type
-	if strings.TrimSpace(shoe.Type) == "" {
-		errors = append(errors, ValidationError{
-			Field:   "type",
-			Message: "Type is required",
-		})
-	}
-
-	// Check for empty SKU
-	if strings.TrimSpace(shoe.SKU) == "" {
-		errors = append(errors, ValidationError{
-			Field:   "sku",
-			Message: "SKU is required",
-		})
-	} else if IsSKUExists(shoe.SKU, shoeId) {
-		errors = append(errors, ValidationError{
-			Field:   "sku",
-			Message: "SKU already exists",
-		})
-	}
-
-	// Check price
-	if shoe.Price <= 0 {
-		errors = append(errors, ValidationError{
-			Field:   "price",
-			Message: "Price must be greater than 0",
-		})
-	}
-
-	// Check stock
-	if shoe.Stock < 0 {
-		errors = append(errors, ValidationError{
-			Field:   "stock",
-			Message: "Stock cannot be negative",
-		})
-	}
-
-	return errors
-}
-
-func Create(shoe entities.Shoe) (bool, []ValidationError) {
-	// Validate before insert
-	if errors := ValidateShoe(shoe, false, 0); len(errors) > 0 {
-		return false, errors
-	}
-
-	result, err := config.DB.Exec(`
-		INSERT INTO shoes(
-			name, id_brand, type, description, sku, price, stock, created_at 
-		) VALUES (?,?,?,?,?,?,?,?)`,
-		shoe.Name,
-		shoe.Brand.Id,
-		shoe.Type,
-		shoe.Description,
-		shoe.SKU,
-		shoe.Price,
-		shoe.Stock,
-		shoe.CreatedAt,
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	LastInsertId, err := result.LastInsertId()
-	if err != nil {
-		panic(err)
-	}
-
-	return LastInsertId > 0, nil
-}
+// 	return nil
+// }

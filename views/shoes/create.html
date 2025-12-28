@@ -44,92 +44,42 @@
             <div class="col-6">
                 <h2 class="text-center">Add Shoe</h2>
                 
-                <!-- Show alert if there are errors -->
-                {{ if .Errors }}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Please fix the following errors:</strong>
-                    <ul class="mb-0">
-                        {{ range .Errors }}
-                        <li>{{ .Message }}</li>
-                        {{ end }}
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {{ end }}
-                
                 <hr>
 
                 <form action="/shoe/add" method="POST" class="needs-validation" novalidate>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name *</label>
-                        <input type="text" class="form-control {{ range .Errors }}{{ if eq .Field "name" }}is-invalid{{ end }}{{ end }}" 
-                               name="name" id="name" value="{{ .OldData.name }}" autocomplete="off" required>
-                        {{ range .Errors }}
-                            {{ if eq .Field "name" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" value="#" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="id_brand" class="form-label">Brand *</label>
-                        <select class="form-select {{ range .Errors }}{{ if eq .Field "brand" }}is-invalid{{ end }}{{ end }}" 
+                        <select class="form-select" 
                                 id="id_brand" name="id_brand" required>
-                            <option value="" {{ if not .OldData.id_brand }}selected{{ end }}>Choose a brand</option>
-                            {{ range .Brands }}
-                                <option value="{{ .Id }}" {{ if eq .Id $.OldData.id_brand }}selected{{ end }}>
-                                    {{ .Name }}
-                                </option>
-                            {{ end }}
+                            <option value="">Choose a brand</option>
                         </select>
-                        {{ range .Errors }}
-                            {{ if eq .Field "brand" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
                     </div>
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type *</label>
-                        <input type="text" class="form-control {{ range .Errors }}{{ if eq .Field "type" }}is-invalid{{ end }}{{ end }}" 
-                               name="type" id="type" value="{{ .OldData.type }}" autocomplete="off" required>
-                        {{ range .Errors }}
-                            {{ if eq .Field "type" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
+                        <label for="type" class="form-label">Type</label>
+                        <input type="text" class="form-control" 
+                               name="type" id="type" value="#" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" rows="3">{{ .OldData.description }}</textarea>
+                        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="sku" class="form-label">SKU *</label>
-                        <input type="text" class="form-control {{ range .Errors }}{{ if eq .Field "sku" }}is-invalid{{ end }}{{ end }}" 
-                               name="sku" id="sku" value="{{ .OldData.sku }}" autocomplete="off" required>
-                        {{ range .Errors }}
-                            {{ if eq .Field "sku" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
+                        <label for="sku" class="form-label">SKU</label>
+                        <input type="text" class="form-control" 
+                               name="sku" id="sku" value="#" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
-                        <label for="price" class="form-label">Price *</label>
-                        <input type="number" class="form-control {{ range .Errors }}{{ if eq .Field "price" }}is-invalid{{ end }}{{ end }}" 
-                               name="price" id="price" value="{{ .OldData.price }}" min="1" autocomplete="off" required>
-                        {{ range .Errors }}
-                            {{ if eq .Field "price" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" class="form-control" name="price" id="price" value="" min="1" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
-                        <label for="stock" class="form-label">Stock *</label>
-                        <input type="number" class="form-control {{ range .Errors }}{{ if eq .Field "stock" }}is-invalid{{ end }}{{ end }}" 
-                               name="stock" id="stock" value="{{ .OldData.stock }}" min="0" autocomplete="off" required>
-                        {{ range .Errors }}
-                            {{ if eq .Field "stock" }}
-                            <div class="error-message">{{ .Message }}</div>
-                            {{ end }}
-                        {{ end }}
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" 
+                               name="stock" id="stock" value="#" min="0" autocomplete="off" required>
                     </div>
                     <div class="row">
                         <div class="col">
