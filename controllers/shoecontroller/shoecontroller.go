@@ -6,6 +6,7 @@ import (
 	"shoes-project/entities"
 	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
+	"strconv"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -70,6 +71,40 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		oldData := make(map[string]string)
 		oldData["name"] = r.FormValue("name")
 		oldData["type"] = r.FormValue("type")
+		oldData["description"] = r.FormValue("description")
+		oldData["sku"] = r.FormValue("sku")
+		oldData["price"] = r.FormValue("price")
+		oldData["stock"] = r.FormValue("stock")
+		oldData["id_brand"] = r.FormValue("id_brand")
+
+		// Parse brand ID
+		brandIdStr := r.FormValue("id_brand")
+		if brandIdStr != "" {
+			brandId, err := strconv.Atoi(brandIdStr)
+			if err == nil {
+				shoe.Stock = int64(brandId)
+			}
+		}
+
+		// Parse stock
+		stockStr := r.FormValue("stock")
+		if stockStr != "" {
+			stock, err := strconv.Atoi(stockStr)
+			if err == nil {
+				shoe.Stock = int64(stock)
+			}
+		}
+
+		// Parse price
+		priceStr := r.FormValue("price")
+		if priceStr != "" {
+			stock, err := strconv.Atoi(priceStr)
+			if err == nil {
+				shoe.Stock = int64(stock)
+			}
+		}
+
+		// Set other fields
 
 		http.Redirect(w, r, "/shoes", http.StatusSeeOther)
 	}
