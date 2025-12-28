@@ -143,19 +143,11 @@ func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationEr
 		})
 	}
 
-	// Check for empty type
-	if strings.TrimSpace(shoe.Type) == "" {
-		errors = append(errors, ValidationError{
-			Field:   "type",
-			Message: "Type is required",
-		})
-	}
-
 	// Check for empty SKU
-	if strings.TrimSpace(shoe.Type) == "" {
+	if strings.TrimSpace(shoe.SKU) == "" {
 		errors = append(errors, ValidationError{
-			Field:   "type",
-			Message: "Type is required",
+			Field:   "sku",
+			Message: "SKU is required",
 		})
 	} else if IsSKUExists(shoe.SKU, shoeId) {
 		errors = append(errors, ValidationError{
@@ -208,7 +200,6 @@ func Create(shoe entities.Shoe) (bool, []ValidationError) {
 	}
 
 	LastInsertId, err := result.LastInsertId()
-	result.LastInsertId()
 	if err != nil {
 		panic(err)
 	}
