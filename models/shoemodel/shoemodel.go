@@ -127,11 +127,64 @@ func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationEr
 		})
 	}
 
-	return nil
+	// Check brand selection
+	if shoe.Brand.Id == 0 {
+		errors = append(errors, ValidationError{
+			Field:   "brand",
+			Message: "Please select a brand",
+		})
+	}
+
+	// Check for empty type
+	if strings.TrimSpace(shoe.Type) == "" {
+		errors = append(errors, ValidationError{
+			Field:   "type",
+			Message: "Type is required",
+		})
+	}
+
+	// Check for empty type
+	if strings.TrimSpace(shoe.Type) == "" {
+		errors = append(errors, ValidationError{
+			Field:   "type",
+			Message: "Type is required",
+		})
+	}
+
+	// Check for empty SKU
+	if strings.TrimSpace(shoe.Type) == "" {
+		errors = append(errors, ValidationError{
+			Field:   "type",
+			Message: "Type is required",
+		})
+	} else if IsSKUExists(shoe.SKU, shoeId) {
+		errors = append(errors, ValidationError{
+			Field:   "sku",
+			Message: "SKU already exists",
+		})
+	}
+
+	// Check price
+	if shoe.Price <= 0 {
+		errors = append(errors, ValidationError{
+			Field:   "price",
+			Message: "Price must be greater than 0",
+		})
+	}
+
+	// Check stock
+	if shoe.Stock < 0 {
+		errors = append(errors, ValidationError{
+			Field:   "stock",
+			Message: "Stock cannot be negative",
+		})
+	}
+
+	return errors
 }
 
 func Create(shoe entities.Shoe) (bool, []ValidationError) {
-	// Validate before insertif
+	// Validate before insert
 	if errors := ValidateShoe(shoe, false, 0); len(errors) > 0 {
 		return false, errors
 	}
