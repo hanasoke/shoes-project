@@ -7,6 +7,7 @@ import (
 	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
 	"strconv"
+	"time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -105,6 +106,32 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Set other fields
+		shoe.Name = r.FormValue("name")
+		shoe.Type = r.FormValue("type")
+		shoe.Description = r.FormValue("description")
+		shoe.SKU = r.FormValue("sku")
+		shoe.CreatedAt = time.Now()
+
+		// Call Create with validation
+		success, errors := shoemodel.Create(shoe)
+
+		if !success {
+			// If validation failed, show form again with errors
+			temp, err := template.ParseFiles("views/shoes/create.html")
+			if err != nil {
+				panic(err)
+			}
+
+			brands := brandmodel.GetAll()
+			data := FormData{
+				Brands:  brands,
+				Errors:  errors,
+				OldData: oldData,
+			}
+
+			temp.Execute(w, data)
+			return
+		}
 
 		http.Redirect(w, r, "/shoes", http.StatusSeeOther)
 	}
