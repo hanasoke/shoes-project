@@ -130,7 +130,12 @@ func ValidateShoe(shoe entities.Shoe, isUpdate bool, shoeId uint) []ValidationEr
 	return nil
 }
 
-func Create(shoe entities.Shoe) bool {
+func Create(shoe entities.Shoe) (bool, []ValidationError) {
+	// Validate before insertif
+	if errors := ValidateShoe(shoe, false, 0); len(errors) > 0 {
+		return false, errors
+	}
+
 	result, err := config.DB.Exec(`
 		INSERT INTO shoes(
 			name, id_brand, type, description, sku, price, stock, created_at 
@@ -155,5 +160,5 @@ func Create(shoe entities.Shoe) bool {
 		panic(err)
 	}
 
-	return LastInsertId > 0
+	return LastInsertId > 0, nil
 }
