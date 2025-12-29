@@ -62,11 +62,8 @@ func Detail(w http.ResponseWriter, r *http.Request) {
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		temp, err := template.ParseFiles("views/shoes/create.html")
-		if err != nil {
-			panic(err)
-		}
+	if r.Method == http.MethodGet {
+		temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 
 		brands := brandmodel.GetAll()
 		data := map[string]any{
@@ -76,8 +73,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		temp.Execute(w, data)
 	}
 
-	if r.Method == "POST" {
-		var shoe entities.Shoe
+	if r.Method == http.MethodPost {
 
 		brandId, err := strconv.Atoi(r.FormValue("id_brand"))
 		if err != nil {
@@ -94,18 +90,28 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		shoe.Name = r.FormValue("name")
-		shoe.Brand.Id = uint(brandId)
-		shoe.Type = r.FormValue("type")
-		shoe.Description = r.FormValue("description")
-		shoe.SKU = r.FormValue("sku")
-		shoe.Price = int64(price)
-		shoe.Stock = int64(stock)
-		shoe.CreatedAt = time.Now()
+		shoeName := r.FormValue("name")
+		BrandId := uint(brandId)
+		Type = r.FormValue("type")
+		Description = r.FormValue("description")
+		SKU := r.FormValue("sku")
 
-		if ok := shoemodel.Create(shoe); !ok {
-			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusTemporaryRedirect)
+		// 1️⃣ NULL / empty validation
+		if shoeName == "" {
+			data := map[string]any{
+				"error": "Shone Name cannot be empty",
+			}
+			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
+			temp.Execute(w, data)
 			return
+		}
+
+		brand := entities.Shoe{
+			Name:      shoeName,
+			Brand:     BrandId,
+			CreatedAt: time.Now(),
+			Price:     int64(price),
+			Stock:     int64(stock),
 		}
 
 		http.Redirect(w, r, "/shoes", http.StatusSeeOther)
