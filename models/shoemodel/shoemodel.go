@@ -52,8 +52,7 @@ func GetAll() []entities.Shoe {
 		SELECT 
 			shoes.id,		
 			shoes.name,
-			shoes.id_brand,
-			brands.name as brand_name,
+			brands.name,
 			shoes.type,
 			shoes.description,
 			shoes.sku,
@@ -103,7 +102,7 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
-func Create(shoe entities.Shoe) error {
+func Create(shoe entities.ShoeCreate) error {
 	exists, err := IsShoeExists(shoe.Name)
 	if err != nil {
 		return err
@@ -125,7 +124,7 @@ func Create(shoe entities.Shoe) error {
 				created_at  
 	) VALUES (?,?,?,?,?,?,?,?)`,
 		shoe.Name,
-		shoe.Brand.Id,
+		shoe.IdBrand,
 		shoe.Type,
 		shoe.Description,
 		shoe.SKU,

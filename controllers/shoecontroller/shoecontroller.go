@@ -8,6 +8,7 @@ import (
 	"shoes-project/models/shoemodel"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -156,9 +157,35 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 		// Buat objek shoe
 		shoe := entities.ShoeCreate{
-			Name: name,
+			Name:        name,
+			IdBrand:     uint(idBrand),
+			Type:        shoeType,
+			Description: description,
+			SKU:         sku,
+			Price:       price,
+			Stock:       stock,
+			CreatedAt:   time.Now(),
 		}
 
-		http.Redirect(w, r, "/shoes", http.StatusSeeOther)
+		// Simpan ke database
+		err = shoemodel.Create(shoe)
+		if err != nil {
+			msg := "Failed to create shoe"
+			if err == shoemodel.ErrDuplicateShoe {
+				msg = "Shoe already exists"
+			}
+
+			brands := brandmodel.GetAll()
+			data := map[string]any{
+				"brands": brands,
+				"error":  msg,
+			}
+			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
+
+			temp.Execute(w, data)
+			return
+		}
+
+		http.Redirect(w, r, "/shoes?success=created", http.StatusSeeOther)
 	}
 }
