@@ -58,7 +58,68 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
-// func Create(shoe entities.Shoe) (bool, []ValidationError) {
+func Create(shoe entities.Shoe) bool {
+	result, err := config.DB.Exec(`
+	INSERT INTO shoes(name, id_brand, type, description, sku, price, stock, created_at  
+	) VALUES (?,?,?,?,?,?,?,?)`,
+		shoe.Name,
+		shoe.Brand.Id,
+		shoe.Type,
+		shoe.Description,
+		shoe.SKU,
+		shoe.Price,
+		shoe.Stock,
+		shoe.CreatedAt,
+	)
 
-// 	return nil
-// }
+	if err != nil {
+		panic(err)
+	}
+
+	LastInsertId, err := result.LastInsertId()
+	result.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+
+	return LastInsertId > 0
+}
+
+func Detail(id int) entities.Shoe {
+	row := config.DB.QueryRow(`
+		SELECT 
+			shoes.id,		
+			shoes.name,
+			brands.name,
+			shoes.type,
+			shoes.description,
+			shoes.sku,
+			shoes.price,
+			shoes.stock,
+			shoes.created_at,
+			brands.id as id_brand
+		FROM shoes
+		JOIN brands ON shoes.id_brand = brands.id
+		WHERE shoes.id = ? 
+	`, id)
+
+	var shoe entities.Shoe
+
+	err := row.Scan(
+		&shoe.Id,
+		&shoe.Name,
+		&shoe.Brand.Name,
+		&shoe.Type,
+		&shoe.Description,
+		&shoe.SKU,
+		&shoe.Price,
+		&shoe.Stock,
+		&shoe.CreatedAt,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return shoe
+}
