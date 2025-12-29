@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shoe Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container">
+            <a class="navbar-brand text-light" href="/">Homepage</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" href="/shoes">Shoes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-light" href="/brands">Brand</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Navbar -->
+    
+    <div class="container my-3">
+        <div class="row d-flex justify-content-center">
+            <div class="col-6">
+                <h2 class="text-center">Shoe Details</h2>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" id="name" autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label for="id_brand" class="form-label">Brand</label>
+                    <input type="text" class="form-control" name="id_brand" id="id_brand" autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label for="type" class="form-label">Type</label>
+                    <input type="text" class="form-control"  name="type" id="type" autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="sku" class="form-label">SKU</label>
+                    <input type="text" class="form-control"  name="sku" id="sku">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" class="form-control" name="price" id="price">
+                </div>
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="number" class="form-control"  name="stock" id="stock" min="0" autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  </body>
+</html>

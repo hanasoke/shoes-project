@@ -41,6 +41,26 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, data)
 }
 
+func Detail(w http.ResponseWriter, r *http.Request) {
+	idString := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		panic(err)
+	}
+
+	shoe := shoemodel.Detail(id)
+	data := map[string]any{
+		"shoe": shoe,
+	}
+
+	temp, err := template.ParseFiles("views/shoes/detail.html")
+	if err != nil {
+		panic(err)
+	}
+
+	temp.Execute(w, data)
+}
+
 func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		temp, err := template.ParseFiles("views/shoes/create.html")
