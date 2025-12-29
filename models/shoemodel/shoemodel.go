@@ -1,9 +1,51 @@
 package shoemodel
 
 import (
+	"database/sql"
+	"errors"
 	"shoes-project/config"
 	"shoes-project/entities"
 )
+
+var ErrDuplicateShoe = errors.New("name already exists")
+
+func IsShoeExists(name string) (bool, error) {
+	var id uint
+	err := config.DB.QueryRow(
+		"SELECT id FROM shoes WHERE name = ? LIMIT 1",
+		name,
+	).Scan(&id)
+
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func IsShoeExistsExceptID(name string, id int) (bool, error) {
+	var Id int
+	err := config.DB.QueryRow(`
+		SELECT id FROM shoes 
+		WHERE name = ? AND id != ?
+		LIMIT 1`,
+		name, id,
+	).Scan(&Id)
+
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
 
 func GetAll() []entities.Shoe {
 	rows, err := config.DB.Query(`
@@ -58,8 +100,17 @@ func GetAll() []entities.Shoe {
 	return shoes
 }
 
-func Create(shoe entities.Shoe) bool {
-	result, err := config.DB.Exec(`
+func Create(shoe entities.Shoe) error {
+	exists, err := IsShoeExists(shoe.Name)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return ErrDuplicateShoe
+	}
+
+	_, err = config.DB.Exec(`
 	INSERT INTO shoes(name, id_brand, type, description, sku, price, stock, created_at  
 	) VALUES (?,?,?,?,?,?,?,?)`,
 		shoe.Name,
@@ -72,17 +123,7 @@ func Create(shoe entities.Shoe) bool {
 		shoe.CreatedAt,
 	)
 
-	if err != nil {
-		panic(err)
-	}
-
-	LastInsertId, err := result.LastInsertId()
-	result.LastInsertId()
-	if err != nil {
-		panic(err)
-	}
-
-	return LastInsertId > 0
+	return err
 }
 
 func Detail(id int) entities.Shoe {
