@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/shoes", shoecontroller.Index)
 	http.HandleFunc("/shoe/add", shoecontroller.Add)
 	http.HandleFunc("/shoe/detail", shoecontroller.Detail)
+	http.HandleFunc("/shoe/delete", shoecontroller.Delete)
 
 	log.Println("Server running on port 8082")
 	http.ListenAndServe(":8082", nil)

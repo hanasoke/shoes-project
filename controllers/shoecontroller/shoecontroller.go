@@ -179,3 +179,17 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/shoes?success=created", http.StatusSeeOther)
 	}
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	idString := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := shoemodel.Delete(id); err != nil {
+		panic(err)
+	}
+
+	http.Redirect(w, r, "/shoes?success=deleted", http.StatusSeeOther)
+}

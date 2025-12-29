@@ -174,3 +174,8 @@ func Detail(id int) entities.Shoe {
 
 	return shoe
 }
+
+func Delete(id int) error {
+	_, err := config.DB.Exec(`DELETE FROM shoes WHERE id = ?`, id)
+	return err
+}
