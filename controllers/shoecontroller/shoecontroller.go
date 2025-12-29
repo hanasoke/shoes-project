@@ -43,23 +43,13 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Detail(w http.ResponseWriter, r *http.Request) {
-	idString := r.URL.Query().Get("id")
-	id, err := strconv.Atoi(idString)
-	if err != nil {
-		panic(err)
-	}
-
-	shoe := shoemodel.Detail(id)
-	data := map[string]any{
-		"shoe": shoe,
-	}
 
 	temp, err := template.ParseFiles("views/shoes/detail.html")
 	if err != nil {
 		panic(err)
 	}
 
-	temp.Execute(w, data)
+	temp.Execute(w, nil)
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {

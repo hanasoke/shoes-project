@@ -76,10 +76,28 @@
                                 <!-- Add your action buttons here -->
                                 <a href="/shoe/detail?id={{ $shoe.Id }}" class="btn btn-info" >Detail</a>
                                 <a href="/shoe/edit?id={{ $shoe.Id }}" class="btn btn-warning">Edit</a>
-                                <a href="/shoe/delete?id={{ $shoe.Id }}" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this product ?')">Delete</a>
+                                <a href="/shoe/delete?id={{ $shoe.Id }}" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ $shoe.Id }}" >Delete</a>
                             </div>
                         </td>
                     </tr>
+                    <!-- Modal -->
+                    <div class="modal fade" id="delete{{ $shoe.Id }}" tabindex="-1" aria-labelledby="shoeLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="shoeLabel">Delete Action</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete <strong>{{ $shoe.Name }}</strong>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="/shoe/delete?id={{ $shoe.Id }}" class="btn btn-danger">Delete</a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 {{ end }}
             </tbody>
         </table>
