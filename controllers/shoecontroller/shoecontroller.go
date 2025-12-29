@@ -7,7 +7,7 @@ import (
 	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
 	"strconv"
-	"time"
+	"strings"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -63,55 +63,100 @@ func Detail(w http.ResponseWriter, r *http.Request) {
 
 func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 
 		brands := brandmodel.GetAll()
 		data := map[string]any{
 			"brands": brands,
 		}
 
+		temp := template.Must(template.ParseFiles("views/shoes/create.html"))
+
 		temp.Execute(w, data)
+		return
 	}
 
 	if r.Method == http.MethodPost {
+		// Ambil data dari form
+		name := strings.TrimSpace(r.FormValue("name"))
+		idBrandStr := r.FormValue("id_brand")
+		shoeType := strings.TrimSpace(r.FormValue("type"))
+		description := strings.TrimSpace(r.FormValue("description"))
+		sku := strings.TrimSpace(r.FormValue("sku"))
+		priceStr := r.FormValue("price")
+		stockStr := r.FormValue("stock")
 
-		brandId, err := strconv.Atoi(r.FormValue("id_brand"))
-		if err != nil {
-			panic(err)
+		// Validasi required fields
+		var validationErrors []string
+
+		if name == "" {
+			validationErrors = append(validationErrors, "Shoe name cannot be empty")
 		}
 
-		price, err := strconv.Atoi(r.FormValue("price"))
-		if err != nil {
-			panic(err)
+		if idBrandStr == "" {
+			validationErrors = append(validationErrors, "Brand is required")
 		}
 
-		stock, err := strconv.Atoi(r.FormValue("stock"))
-		if err != nil {
-			panic(err)
+		if shoeType == "" {
+			validationErrors = append(validationErrors, "Type cannot be empty")
 		}
 
-		shoeName := r.FormValue("name")
-		BrandId := uint(brandId)
-		Type = r.FormValue("type")
-		Description = r.FormValue("description")
-		SKU := r.FormValue("sku")
+		if description == "" {
+			validationErrors = append(validationErrors, "Type cannot be empty")
+		}
 
-		// 1️⃣ NULL / empty validation
-		if shoeName == "" {
+		if sku == "" {
+			validationErrors = append(validationErrors, "SKU cannot be empty")
+		}
+
+		if priceStr == "" {
+			validationErrors = append(validationErrors, "Price cannot be empty")
+		}
+
+		if stockStr == "" {
+			validationErrors = append(validationErrors, "Price cannot be empty")
+		}
+
+		if len(validationErrors) > 0 {
+			brands := brandmodel.GetAll()
 			data := map[string]any{
-				"error": "Shone Name cannot be empty",
+				"brands": brands,
+				"error":  strings.Join(validationErrors, ","),
 			}
 			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 			temp.Execute(w, data)
 			return
 		}
 
-		brand := entities.Shoe{
-			Name:      shoeName,
-			Brand:     BrandId,
-			CreatedAt: time.Now(),
-			Price:     int64(price),
-			Stock:     int64(stock),
+		// Konversi tipe data
+		idBrand, err := strconv.Atoi(idBrandStr)
+		if err != nil {
+			validationErrors = append(validationErrors, "Invalid brand ID")
+		}
+
+		price, err := strconv.ParseInt(priceStr, 10, 64)
+		if err != nil || price <= 0 {
+			validationErrors = append(validationErrors, "Price must be a positive number")
+		}
+
+		stock, err := strconv.ParseInt(stockStr, 10, 64)
+		if err != nil || stock < 0 {
+			validationErrors = append(validationErrors, "Stock must be zero or positive number")
+		}
+
+		if len(validationErrors) > 0 {
+			brands := brandmodel.GetAll()
+			data := map[string]any{
+				"brands": brands,
+				"error":  strings.Join(validationErrors, ","),
+			}
+			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
+			temp.Execute(w, data)
+			return
+		}
+
+		// Buat objek shoe
+		shoe := entities.ShoeCreate{
+			Name: name,
 		}
 
 		http.Redirect(w, r, "/shoes", http.StatusSeeOther)

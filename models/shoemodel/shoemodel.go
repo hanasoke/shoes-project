@@ -7,7 +7,7 @@ import (
 	"shoes-project/entities"
 )
 
-var ErrDuplicateShoe = errors.New("name already exists")
+var ErrDuplicateShoe = errors.New("shoe already exists")
 
 func IsShoeExists(name string) (bool, error) {
 	var id uint
@@ -52,7 +52,8 @@ func GetAll() []entities.Shoe {
 		SELECT 
 			shoes.id,		
 			shoes.name,
-			brands.name,
+			shoes.id_brand,
+			brands.name as brand_name,
 			shoes.type,
 			shoes.description,
 			shoes.sku,
@@ -75,6 +76,7 @@ func GetAll() []entities.Shoe {
 	for rows.Next() {
 		var shoe entities.Shoe
 		var brand entities.Brand
+		var idBrand uint
 
 		err := rows.Scan(
 			&shoe.Id,
@@ -93,6 +95,7 @@ func GetAll() []entities.Shoe {
 			panic(err)
 		}
 
+		brand.Id = idBrand
 		shoe.Brand = brand
 		shoes = append(shoes, shoe)
 	}
@@ -111,7 +114,15 @@ func Create(shoe entities.Shoe) error {
 	}
 
 	_, err = config.DB.Exec(`
-	INSERT INTO shoes(name, id_brand, type, description, sku, price, stock, created_at  
+	INSERT INTO shoes (
+				name, 
+				id_brand, 
+				type, 
+				description, 
+				sku, 
+				price, 
+				stock, 
+				created_at  
 	) VALUES (?,?,?,?,?,?,?,?)`,
 		shoe.Name,
 		shoe.Brand.Id,
