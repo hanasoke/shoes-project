@@ -92,7 +92,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if description == "" {
-			validationErrors = append(validationErrors, "Type cannot be empty")
+			validationErrors = append(validationErrors, "Description cannot be empty")
 		}
 
 		if sku == "" {
@@ -104,7 +104,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if stockStr == "" {
-			validationErrors = append(validationErrors, "Price cannot be empty")
+			validationErrors = append(validationErrors, "Stock cannot be empty")
 		}
 
 		if len(validationErrors) > 0 {
