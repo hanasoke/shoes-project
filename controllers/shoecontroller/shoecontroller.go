@@ -58,6 +58,15 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		brands := brandmodel.GetAll()
 		data := map[string]any{
 			"brands": brands,
+			"form": map[string]any{
+				"name":        "",
+				"idBrand":     0,
+				"type":        "",
+				"description": "",
+				"sku":         "",
+				"price":       "",
+				"stock":       "",
+			},
 		}
 
 		temp := template.Must(template.ParseFiles("views/shoes/create.html"))
@@ -69,24 +78,45 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		// Ambil data dari form
 		name := strings.TrimSpace(r.FormValue("name"))
-		idBrandStr := r.FormValue("id_brand")
+		idBrandStr := strings.TrimSpace(r.FormValue("id_brand"))
 		shoeType := strings.TrimSpace(r.FormValue("type"))
 		description := strings.TrimSpace(r.FormValue("description"))
 		sku := strings.TrimSpace(r.FormValue("sku"))
-		priceStr := r.FormValue("price")
-		stockStr := r.FormValue("stock")
+		priceStr := strings.TrimSpace(r.FormValue("price"))
+		stockStr := strings.TrimSpace(r.FormValue("stock"))
 
 		// Validasi required fields
 		var validationErrors []string
+		var errorBrand string
 
+		// Data form untuk dikembalikan ke template
+		formData := map[string]any{
+			"name":        name,
+			"type":        shoeType,
+			"description": description,
+			"sku":         sku,
+			"price":       priceStr,
+			"stock":       stockStr,
+		}
+
+		// Validasi nama
 		if name == "" {
 			validationErrors = append(validationErrors, "Shoe name cannot be empty")
 		}
 
+		// Validasi brand - ini adalah masalah utama
 		if idBrandStr == "" {
 			validationErrors = append(validationErrors, "Brand is required")
+			errorBrand = "Brand is required"
+		} else if idBrandStr == "#" {
+			// Periksa jika user memilih placeholder
+			validationErrors = append(validationErrors, "Brand is required")
+			errorBrand = "Brand is required"
+			idBrandStr = "" // Set kosong untuk konsistensi
+
 		}
 
+		// Validasi field lainnya
 		if shoeType == "" {
 			validationErrors = append(validationErrors, "Type cannot be empty")
 		}
@@ -107,38 +137,57 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			validationErrors = append(validationErrors, "Stock cannot be empty")
 		}
 
-		if len(validationErrors) > 0 {
-			brands := brandmodel.GetAll()
-			data := map[string]any{
-				"brands": brands,
-				"error":  strings.Join(validationErrors, ","),
+		// Konversi dan validasi tipe data
+		var idBrand int
+		var price, stock int64
+		var conversionErrors []string
+
+		if idBrandStr != "" && idBrandStr != "#" {
+			id, err := strconv.Atoi(idBrandStr)
+			if err != nil {
+				conversionErrors = append(conversionErrors, "Invalid brand ID")
+				errorBrand = "Invalid brand ID"
+			} else if id <= 0 {
+				conversionErrors = append(conversionErrors, "Brand ID must be positive")
+				errorBrand = "Brand ID must be positive"
+			} else {
+				idBrand = id
+				formData["idBrand"] = uint(id)
 			}
-			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
-			temp.Execute(w, data)
-			return
 		}
 
-		// Konversi tipe data
-		idBrand, err := strconv.Atoi(idBrandStr)
-		if err != nil {
-			validationErrors = append(validationErrors, "Invalid brand ID")
+		if priceStr != "" {
+			p, err := strconv.ParseInt(priceStr, 10, 64)
+			if err != nil {
+				conversionErrors = append(conversionErrors, "Price must be a valid number")
+			} else if p <= 0 {
+				conversionErrors = append(conversionErrors, "Price must be a positive number")
+			} else {
+				price = p
+			}
 		}
 
-		price, err := strconv.ParseInt(priceStr, 10, 64)
-		if err != nil || price <= 0 {
-			validationErrors = append(validationErrors, "Price must be a positive number")
+		if stockStr != "" {
+			s, err := strconv.ParseInt(stockStr, 10, 64)
+			if err != nil {
+				conversionErrors = append(conversionErrors, "Stock must be a valid number")
+			} else if s < 0 {
+				conversionErrors = append(conversionErrors, "Stock must be zero or positive number")
+			} else {
+				stock = s
+			}
 		}
 
-		stock, err := strconv.ParseInt(stockStr, 10, 64)
-		if err != nil || stock < 0 {
-			validationErrors = append(validationErrors, "Stock must be zero or positive number")
-		}
+		// Gabungkan semua error
+		allErrors := append(validationErrors, conversionErrors...)
 
-		if len(validationErrors) > 0 {
+		if len(allErrors) > 0 {
 			brands := brandmodel.GetAll()
 			data := map[string]any{
-				"brands": brands,
-				"error":  strings.Join(validationErrors, ","),
+				"brands":     brands,
+				"error":      strings.Join(allErrors, ", "),
+				"errorBrand": errorBrand,
+				"form":       formData,
 			}
 			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 			temp.Execute(w, data)
@@ -158,7 +207,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Simpan ke database
-		err = shoemodel.Create(shoe)
+		err := shoemodel.Create(shoe)
 		if err != nil {
 			msg := "Failed to create shoe"
 			if err == shoemodel.ErrDuplicateShoe {
@@ -169,6 +218,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			data := map[string]any{
 				"brands": brands,
 				"error":  msg,
+				"form":   formData,
 			}
 			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 
@@ -176,6 +226,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Redirect ke halaman index dengan pesan sukses
 		http.Redirect(w, r, "/shoes?success=created", http.StatusSeeOther)
 	}
 }

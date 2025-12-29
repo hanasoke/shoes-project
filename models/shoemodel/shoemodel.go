@@ -113,16 +113,17 @@ func Create(shoe entities.ShoeCreate) error {
 	}
 
 	_, err = config.DB.Exec(`
-	INSERT INTO shoes (
-				name, 
-				id_brand, 
-				type, 
-				description, 
-				sku, 
-				price, 
-				stock, 
-				created_at  
-	) VALUES (?,?,?,?,?,?,?,?)`,
+		INSERT INTO shoes (
+			name, 
+			id_brand, 
+			type, 
+			description, 
+			sku, 
+			price, 
+			stock, 
+			created_at,
+			updated_at
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		shoe.Name,
 		shoe.IdBrand,
 		shoe.Type,
@@ -131,6 +132,7 @@ func Create(shoe entities.ShoeCreate) error {
 		shoe.Price,
 		shoe.Stock,
 		shoe.CreatedAt,
+		shoe.UpdatedAt,
 	)
 
 	return err

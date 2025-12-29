@@ -1,3 +1,4 @@
+<!-- views/shoes/create.html -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -45,35 +46,46 @@
                 <form action="/shoe/add" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" id="name" autocomplete="off">
+                        <input type="text" class="form-control {{ if .errorName }}is-invalid{{ end }}" name="name" id="name" autocomplete="off" value="{{ .form.name }}">
+                        {{ if .errorName }}
+                            <div class="invalid-feedback">
+                                {{ .errorName }}
+                            </div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
-                        <label for="id_brand" class="form-label">Brand</label>
-                        <select class="form-select" id="id_brand" name="id_brand">
+                        <label for="id_brand" class="form-label">Brand *</label>
+                        <select class="form-select {{ if .errorBrand }}is-invalid{{ end }}" id="id_brand" name="id_brand">
+                            <option value="" selected disabled>Select A Brand</option>
                             {{ range .brands }}
-                                <option value="{{ .Id }}">{{ .Name }}</option>
+                                <option value="{{ .Id }}" {{ if eq .Id $.form.idBrand }}selected{{ end }}>{{ .Name }}</option>
                             {{ end }}
                         </select>
+                        {{ if .errorBrand }}
+                            <div class="invalid-feedback">
+                                {{ .errorBrand }}
+                            </div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control"  name="type" id="type" autocomplete="off">
+                        <input type="text" class="form-control" name="type" id="type" autocomplete="off" value="{{ .form.type }}">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                        <textarea class="form-control" name="description" id="description" rows="3">{{ .form.description }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="sku" class="form-label">SKU</label>
-                        <input type="text" class="form-control"  name="sku" id="sku" autocomplete="off">
+                        <input type="text" class="form-control" name="sku" id="sku" autocomplete="off" value="{{ .form.sku }}">
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price</label>
-                        <input type="number" class="form-control" name="price" id="price" min="1" autocomplete="off">
+                        <input type="number" class="form-control" name="price" id="price" min="1" autocomplete="off" value="{{ .form.price }}">
                     </div>
                     <div class="mb-3">
                         <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" name="stock" id="stock" min="0" autocomplete="off">
+                        <input type="number" class="form-control" name="stock" id="stock" min="0" autocomplete="off" value="{{ .form.stock }}">
                     </div>
                     <div class="row">
                         <div class="col">
