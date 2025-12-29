@@ -37,9 +37,8 @@
 
                 {{ if .error }}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ .error }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        {{ end }}
+                    {{ .error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {{ end }}
 
@@ -58,7 +57,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control" name="type" id="type" autocomplete="off">
+                        <input type="text" class="form-control"  name="type" id="type" autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
@@ -66,8 +65,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="sku" class="form-label">SKU</label>
-                        <input type="text" class="form-control" 
-                               name="sku" id="sku" autocomplete="off">
+                        <input type="text" class="form-control"  name="sku" id="sku" autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price</label>
@@ -75,8 +73,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" 
-                               name="stock" id="stock" min="0" autocomplete="off">
+                        <input type="number" class="form-control" name="stock" id="stock" min="0" autocomplete="off">
                     </div>
                     <div class="row">
                         <div class="col">
