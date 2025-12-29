@@ -3,6 +3,7 @@ package shoecontroller
 import (
 	"html/template"
 	"net/http"
+	"shoes-project/models/brandmodel"
 	"shoes-project/models/shoemodel"
 )
 
@@ -44,7 +45,12 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		temp.Execute(w, temp)
+		brands := brandmodel.GetAll()
+		data := map[string]any{
+			"brands": brands,
+		}
+
+		temp.Execute(w, data)
 	}
 
 	if r.Method == "POST" {

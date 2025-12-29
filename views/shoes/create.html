@@ -55,7 +55,9 @@
                         <label for="id_brand" class="form-label">Brand *</label>
                         <select class="form-select" 
                                 id="id_brand" name="id_brand" required>
-                            <option value="">Choose a brand</option>
+                                {{ range .brands }}
+                                    <option value="{{ .Id }}">{{ .Name }}</option>
+                                {{ end }}
                         </select>
                     </div>
                     <div class="mb-3">
