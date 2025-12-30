@@ -329,22 +329,21 @@ func Add(w http.ResponseWriter, r *http.Request) {
 }
 
 func Edit(w http.ResponseWriter, r *http.Request) {
+	// Ambil ID dari query parameter
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "ID is required", http.StatusBadRequest)
+		return
+	}
+
+	// Konversi ID ke integer
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
 	if r.Method == http.MethodGet {
-
-		// Ambil ID dari query parameter
-		idStr := r.URL.Query().Get("id")
-		if idStr == "" {
-			http.Error(w, "ID is required", http.StatusBadRequest)
-			return
-		}
-
-		// Konversi ID ke integer
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			http.Error(w, "Invalid ID", http.StatusBadRequest)
-			return
-		}
-
 		// Ambil data shoe dari model
 		shoe, err := shoemodel.Detail(id)
 		if err != nil {
@@ -357,12 +356,15 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Buat funcMap untuk detail
+		// Ambil semua brand untuk dropdown
+		brands := brandmodel.GetAll()
+
+		// Buat funcMap
 		funcMap := template.FuncMap{
 			"formatRupiah": formatRupiah,
 		}
 
-		// Parse template dengan fungsi helper
+		// Parse template
 		t := template.New("edit.html").Funcs(funcMap)
 		t, err = t.ParseFiles("views/shoes/edit.html")
 		if err != nil {
@@ -372,7 +374,26 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 
 		// Prepare data untuk template
 		data := map[string]interface{}{
-			"shoe": shoe,
+			"shoe":   shoe,
+			"brands": brands,
+			"form": map[string]interface{}{
+				"name":        shoe.Name,
+				"idBrand":     shoe.Brand.Id,
+				"type":        shoe.Type,
+				"description": shoe.Description,
+				"sku":         shoe.SKU,
+				"price":       shoe.Price,
+				"stock":       shoe.Stock,
+			},
+			"errors": map[string]string{
+				"name":        "",
+				"brand":       "",
+				"type":        "",
+				"description": "",
+				"sku":         "",
+				"price":       "",
+				"stock":       "",
+			},
 		}
 
 		// Execute template dengan data
