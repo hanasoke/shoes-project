@@ -43,13 +43,50 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Detail(w http.ResponseWriter, r *http.Request) {
-
-	temp, err := template.ParseFiles("views/shoes/detail.html")
-	if err != nil {
-		panic(err)
+	// Ambil ID dari query parameter
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "ID is required", http.StatusBadRequest)
+		return
 	}
 
-	temp.Execute(w, nil)
+	// Konversi ID ke integer
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+
+	// Ambil data shoe dari model
+	shoe, err := shoemodel.Detail(id)
+	if err != nil {
+		// Handle jika shoe tidak ditemukan
+		if err.Error() == "shoe not found" {
+			http.Error(w, "Shoe not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Parse template
+	temp, err := template.ParseFiles("views/shoes/detail.html")
+	if err != nil {
+		http.Error(w, "Template error", http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare data untuk template
+	data := map[string]interface{}{
+		"shoe": shoe,
+	}
+
+	// Execute template dengan data
+	err = temp.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Template execution error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func Add(w http.ResponseWriter, r *http.Request) {

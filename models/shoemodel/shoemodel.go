@@ -138,30 +138,33 @@ func Create(shoe entities.ShoeCreate) error {
 	return err
 }
 
-func Detail(id int) entities.Shoe {
+// models/shoemodel/shoemodel.go
+func Detail(id int) (entities.Shoe, error) {
 	row := config.DB.QueryRow(`
 		SELECT 
 			shoes.id,		
 			shoes.name,
-			brands.name,
+			brands.id as brand_id,
+			brands.name as brand_name,
 			shoes.type,
 			shoes.description,
 			shoes.sku,
 			shoes.price,
 			shoes.stock,
-			shoes.created_at,
-			brands.id as id_brand
+			shoes.created_at
 		FROM shoes
 		JOIN brands ON shoes.id_brand = brands.id
 		WHERE shoes.id = ? 
 	`, id)
 
 	var shoe entities.Shoe
+	var brand entities.Brand
 
 	err := row.Scan(
 		&shoe.Id,
 		&shoe.Name,
-		&shoe.Brand.Name,
+		&brand.Id,   // Brand ID
+		&brand.Name, // Brand Name
 		&shoe.Type,
 		&shoe.Description,
 		&shoe.SKU,
@@ -171,10 +174,16 @@ func Detail(id int) entities.Shoe {
 	)
 
 	if err != nil {
-		panic(err)
+		if err == sql.ErrNoRows {
+			return entities.Shoe{}, errors.New("shoe not found")
+		}
+		return entities.Shoe{}, err
 	}
 
-	return shoe
+	// Assign brand to shoe
+	shoe.Brand = brand
+
+	return shoe, nil
 }
 
 func Delete(id int) error {
