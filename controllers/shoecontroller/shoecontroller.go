@@ -483,15 +483,14 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 
 		// Konversi dan validasi tipe data
 		var idBrand uint
-		var price, stock int64
 
-		if idBrandStr != "" && idBrandStr != "#" {
+		if idBrandStr != "" && idBrandStr != "#" && fieldErrors["brand"] == "" {
 			id, err := strconv.Atoi(idBrandStr)
 			if err != nil {
-				fieldErrors["brand"] = "Invalid brand ID"
+				fieldErrors["brand"] = "Invalid brand selection"
 				hasValidationError = true
 			} else if id <= 0 {
-				fieldErrors["brand"] = "Brand ID must be positive"
+				fieldErrors["brand"] = "Please select a valid brand"
 				hasValidationError = true
 			} else {
 				idBrand = uint(id)
@@ -499,29 +498,60 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if priceStr != "" && fieldErrors["price"] == "" {
+		// Validasi price - dengan pesan error yang lebih spesifik
+		var price int64
+		if priceStr == "" {
+			fieldErrors["price"] = "Price cannot be empty"
+			hasValidationError = true
+		} else {
 			p, err := strconv.ParseInt(priceStr, 10, 64)
 			if err != nil {
-				fieldErrors["price"] = "Price must be a valid number"
+				// Deteksi tipe error
+				if strings.Contains(err.Error(), "value out of range") {
+					fieldErrors["price"] = "Price value is too large"
+				} else if strings.Contains(err.Error(), "invalid syntax") {
+					fieldErrors["price"] = "Price must be a valid number (e.g., 150000)"
+				} else {
+					fieldErrors["price"] = "Invalid price format"
+				}
 				hasValidationError = true
 			} else if p <= 0 {
-				fieldErrors["price"] = "Price must be a positive"
+				fieldErrors["price"] = "Price must be greater than 0"
+				hasValidationError = true
+			} else if p > 1000000000 { // Batas maksimal 1 miliar
+				fieldErrors["price"] = "Price cannot exceed Rp 1,000,000,000"
 				hasValidationError = true
 			} else {
 				price = p
+				formData["price"] = price // Simpan sebagai integer, bukan string
 			}
 		}
 
-		if stockStr != "" && fieldErrors["stock"] == "" {
+		// Validasi stock - dengan pesan error yang lebih spesifik
+		var stock int64
+		if stockStr == "" {
+			fieldErrors["stock"] = "Stock cannot be empty"
+			hasValidationError = true
+		} else {
 			s, err := strconv.ParseInt(stockStr, 10, 64)
 			if err != nil {
-				fieldErrors["stock"] = "Stock must be zero or positive number"
+				if strings.Contains(err.Error(), "value out of range") {
+					fieldErrors["stock"] = "Stock value is too large"
+				} else if strings.Contains(err.Error(), "invalid syntax") {
+					fieldErrors["stock"] = "Stock must be a valid whole number"
+				} else {
+					fieldErrors["stock"] = "Invalid stock format"
+				}
 				hasValidationError = true
 			} else if s < 0 {
-				fieldErrors["stock"] = "Stock must be zero or positive number"
+				fieldErrors["stock"] = "Stock cannot be negative"
+				hasValidationError = true
+			} else if s > 100000 { // Batas maksimal stok
+				fieldErrors["stock"] = "Stock cannot exceed 100,000 units"
 				hasValidationError = true
 			} else {
 				stock = s
+				formData["stock"] = stock // Simpan sebagai integer, bukan string
 			}
 		}
 
