@@ -347,7 +347,6 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		// Ambil data shoe dari model
 		shoe, err := shoemodel.Detail(id)
 		if err != nil {
-			// Handle jika shoe tidak ditemukan
 			if err.Error() == "shoe not found" {
 				http.Error(w, "Shoe not found", http.StatusNotFound)
 				return
@@ -396,11 +395,10 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			},
 		}
 
-		// Execute template dengan data
+		// Execute template
 		err = t.Execute(w, data)
 		if err != nil {
 			http.Error(w, "Template execution error", http.StatusInternalServerError)
-			return
 		}
 		return
 	}
@@ -483,14 +481,15 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 
 		// Konversi dan validasi tipe data
 		var idBrand uint
+		var price, stock int64
 
-		if idBrandStr != "" && idBrandStr != "#" && fieldErrors["brand"] == "" {
+		if idBrandStr != "" && idBrandStr != "#" {
 			id, err := strconv.Atoi(idBrandStr)
 			if err != nil {
-				fieldErrors["brand"] = "Invalid brand selection"
+				fieldErrors["brand"] = "Invalid brand ID"
 				hasValidationError = true
 			} else if id <= 0 {
-				fieldErrors["brand"] = "Please select a valid brand"
+				fieldErrors["brand"] = "Brand ID must be positive"
 				hasValidationError = true
 			} else {
 				idBrand = uint(id)
@@ -498,67 +497,36 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Validasi price - dengan pesan error yang lebih spesifik
-		var price int64
-		if priceStr == "" {
-			fieldErrors["price"] = "Price cannot be empty"
-			hasValidationError = true
-		} else {
+		if priceStr != "" && fieldErrors["price"] == "" {
 			p, err := strconv.ParseInt(priceStr, 10, 64)
 			if err != nil {
-				// Deteksi tipe error
-				if strings.Contains(err.Error(), "value out of range") {
-					fieldErrors["price"] = "Price value is too large"
-				} else if strings.Contains(err.Error(), "invalid syntax") {
-					fieldErrors["price"] = "Price must be a valid number (e.g., 150000)"
-				} else {
-					fieldErrors["price"] = "Invalid price format"
-				}
+				fieldErrors["price"] = "Price must be a valid number"
 				hasValidationError = true
 			} else if p <= 0 {
-				fieldErrors["price"] = "Price must be greater than 0"
-				hasValidationError = true
-			} else if p > 1000000000 { // Batas maksimal 1 miliar
-				fieldErrors["price"] = "Price cannot exceed Rp 1,000,000,000"
+				fieldErrors["price"] = "Price must be a positive number"
 				hasValidationError = true
 			} else {
 				price = p
-				formData["price"] = price // Simpan sebagai integer, bukan string
 			}
 		}
 
-		// Validasi stock - dengan pesan error yang lebih spesifik
-		var stock int64
-		if stockStr == "" {
-			fieldErrors["stock"] = "Stock cannot be empty"
-			hasValidationError = true
-		} else {
+		if stockStr != "" && fieldErrors["stock"] == "" {
 			s, err := strconv.ParseInt(stockStr, 10, 64)
 			if err != nil {
-				if strings.Contains(err.Error(), "value out of range") {
-					fieldErrors["stock"] = "Stock value is too large"
-				} else if strings.Contains(err.Error(), "invalid syntax") {
-					fieldErrors["stock"] = "Stock must be a valid whole number"
-				} else {
-					fieldErrors["stock"] = "Invalid stock format"
-				}
+				fieldErrors["stock"] = "Stock must be a valid number"
 				hasValidationError = true
 			} else if s < 0 {
-				fieldErrors["stock"] = "Stock cannot be negative"
-				hasValidationError = true
-			} else if s > 100000 { // Batas maksimal stok
-				fieldErrors["stock"] = "Stock cannot exceed 100,000 units"
+				fieldErrors["stock"] = "Stock must be zero or positive number"
 				hasValidationError = true
 			} else {
 				stock = s
-				formData["stock"] = stock // Simpan sebagai integer, bukan string
 			}
 		}
 
 		// Jika ada error validasi, tampilkan form kembali
 		if hasValidationError {
 			brands := brandmodel.GetAll()
-			shoe, _ := shoemodel.Detail(id)
+			shoe, _ := shoemodel.Detail(id) // Ambil data shoe untuk template
 
 			data := map[string]interface{}{
 				"shoe":   shoe,
@@ -597,9 +565,13 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		// Update data ke database
 		err = shoemodel.Update(id, shoeUpdate)
 		if err != nil {
-			msg := "Failed to update shoe"
+			msg := "No"
 			if err == shoemodel.ErrDuplicateShoe {
 				msg = "Shoe name already exists"
+			}
+
+			if msg == "No" {
+				http.Redirect(w, r, "/shoes?success=updated", http.StatusSeeOther)
 			}
 
 			// Tampilkan form kembali dengan error

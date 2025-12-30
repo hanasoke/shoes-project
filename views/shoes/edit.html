@@ -54,7 +54,8 @@
                         <label for="name" class="form-label required">Name</label>
                         <input type="text" class="form-control {{ if .errors.name }}is-invalid{{ end }}" 
                                name="name" id="name" autocomplete="off" 
-                               value="{{ if .form.name }}{{ .form.name }}{{ else }}{{ .shoe.Name }}{{ end }}">
+                               value="{{ if .form.name }}{{ .form.name }}{{ else }}{{ .shoe.Name }}{{ end }}"
+                               required>
                         {{ if .errors.name }}
                             <div class="invalid-feedback">
                                 {{ .errors.name }}
@@ -68,7 +69,7 @@
                     <div class="mb-3">
                         <label for="id_brand" class="form-label required">Brand</label>
                         <select class="form-select {{ if .errors.brand }}is-invalid{{ end }}" 
-                                id="id_brand" name="id_brand">
+                                id="id_brand" name="id_brand" required>
                             <option value="" disabled>Select A Brand</option>
                             {{ range .brands }}
                                 <option value="{{ .Id }}" 
@@ -95,7 +96,8 @@
                         <label for="type" class="form-label required">Type</label>
                         <input type="text" class="form-control {{ if .errors.type }}is-invalid{{ end }}" 
                                name="type" id="type" autocomplete="off" 
-                               value="{{ if .form.type }}{{ .form.type }}{{ else }}{{ .shoe.Type }}{{ end }}">
+                               value="{{ if .form.type }}{{ .form.type }}{{ else }}{{ .shoe.Type }}{{ end }}"
+                               required>
                         {{ if .errors.type }}
                             <div class="invalid-feedback">
                                 {{ .errors.type }}
@@ -124,7 +126,8 @@
                         <label for="sku" class="form-label required">SKU</label>
                         <input type="text" class="form-control {{ if .errors.sku }}is-invalid{{ end }}" 
                                name="sku" id="sku" autocomplete="off" 
-                               value="{{ if .form.sku }}{{ .form.sku }}{{ else }}{{ .shoe.SKU }}{{ end }}">
+                               value="{{ if .form.sku }}{{ .form.sku }}{{ else }}{{ .shoe.SKU }}{{ end }}"
+                               required>
                         {{ if .errors.sku }}
                             <div class="invalid-feedback">
                                 {{ .errors.sku }}
@@ -141,7 +144,8 @@
                             <span class="input-group-text">Rp</span>
                             <input type="number" class="form-control {{ if .errors.price }}is-invalid{{ end }}" 
                                    name="price" id="price" min="1" autocomplete="off" 
-                                   value="{{ if .form.price }}{{ .form.price }}{{ else }}{{ .shoe.Price }}{{ end }}">
+                                   value="{{ if .form.price }}{{ .form.price }}{{ else }}{{ .shoe.Price }}{{ end }}"
+                                   required>
                         </div>
                         {{ if .errors.price }}
                             <div class="invalid-feedback">
@@ -159,7 +163,8 @@
                         <label for="stock" class="form-label required">Stock</label>
                         <input type="number" class="form-control {{ if .errors.stock }}is-invalid{{ end }}" 
                                name="stock" id="stock" min="0" autocomplete="off" 
-                               value="{{ if .form.stock }}{{ .form.stock }}{{ else }}{{ .shoe.Stock }}{{ end }}">
+                               value="{{ if .form.stock }}{{ .form.stock }}{{ else }}{{ .shoe.Stock }}{{ end }}"
+                               required>
                         {{ if .errors.stock }}
                             <div class="invalid-feedback">
                                 {{ .errors.stock }}
