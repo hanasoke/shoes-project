@@ -406,7 +406,201 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
+		// Ambil data dari form
+		name := strings.TrimSpace(r.FormValue("name"))
+		idBrandStr := strings.TrimSpace(r.FormValue("id_brand"))
+		shoeType := strings.TrimSpace(r.FormValue("type"))
+		description := strings.TrimSpace(r.FormValue("description"))
+		sku := strings.TrimSpace(r.FormValue("sku"))
+		priceStr := strings.TrimSpace(r.FormValue("price"))
+		stockStr := strings.TrimSpace(r.FormValue("stock"))
 
+		// Inisialisasi map untuk error per field
+		fieldErrors := map[string]string{
+			"name":        "",
+			"brand":       "",
+			"type":        "",
+			"description": "",
+			"sku":         "",
+			"price":       "",
+			"stock":       "",
+		}
+
+		// Data form untuk dikembalikan ke template
+		formData := map[string]interface{}{
+			"name":        name,
+			"type":        shoeType,
+			"description": description,
+			"sku":         sku,
+			"price":       priceStr,
+			"stock":       stockStr,
+		}
+
+		// Validasi required fields
+		hasValidationError := false
+
+		// Validasi nama
+		if name == "" {
+			fieldErrors["name"] = "Shoe name cannot be empty"
+			hasValidationError = true
+		}
+
+		// Validasi brand
+		if idBrandStr == "" || idBrandStr == "#" {
+			fieldErrors["brand"] = "Brand is required"
+			hasValidationError = true
+		}
+
+		// Validasi type
+		if shoeType == "" {
+			fieldErrors["type"] = "Type cannot be empty"
+			hasValidationError = true
+		}
+
+		// Validasi description
+		if description == "" {
+			fieldErrors["description"] = "Description cannot be empty"
+			hasValidationError = true
+		}
+
+		// Validasi sku
+		if sku == "" {
+			fieldErrors["sku"] = "SKU cannot be empty"
+			hasValidationError = true
+		}
+
+		// Validasi price
+		if priceStr == "" {
+			fieldErrors["price"] = "Price cannot be empty"
+			hasValidationError = true
+		}
+
+		// Validasi stock
+		if stockStr == "" {
+			fieldErrors["stock"] = "Stock cannot be empty"
+			hasValidationError = true
+		}
+
+		// Konversi dan validasi tipe data
+		var idBrand uint
+		var price, stock int64
+
+		if idBrandStr != "" && idBrandStr != "#" {
+			id, err := strconv.Atoi(idBrandStr)
+			if err != nil {
+				fieldErrors["brand"] = "Invalid brand ID"
+				hasValidationError = true
+			} else if id <= 0 {
+				fieldErrors["brand"] = "Brand ID must be positive"
+				hasValidationError = true
+			} else {
+				idBrand = uint(id)
+				formData["idBrand"] = idBrand
+			}
+		}
+
+		if priceStr != "" && fieldErrors["price"] == "" {
+			p, err := strconv.ParseInt(priceStr, 10, 64)
+			if err != nil {
+				fieldErrors["price"] = "Price must be a valid number"
+				hasValidationError = true
+			} else if p <= 0 {
+				fieldErrors["price"] = "Price must be a positive"
+				hasValidationError = true
+			} else {
+				price = p
+			}
+		}
+
+		if stockStr != "" && fieldErrors["stock"] == "" {
+			s, err := strconv.ParseInt(stockStr, 10, 64)
+			if err != nil {
+				fieldErrors["stock"] = "Stock must be zero or positive number"
+				hasValidationError = true
+			} else if s < 0 {
+				fieldErrors["stock"] = "Stock must be zero or positive number"
+				hasValidationError = true
+			} else {
+				stock = s
+			}
+		}
+
+		// Jika ada error validasi, tampilkan form kembali
+		if hasValidationError {
+			brands := brandmodel.GetAll()
+			shoe, _ := shoemodel.Detail(id)
+
+			data := map[string]interface{}{
+				"shoe":   shoe,
+				"brands": brands,
+				"errors": fieldErrors,
+				"form":   formData,
+			}
+
+			funcMap := template.FuncMap{
+				"formatRupiah": formatRupiah,
+			}
+
+			t := template.New("edit.html").Funcs(funcMap)
+			t, err = t.ParseFiles("views/shoes/edit.html")
+			if err != nil {
+				http.Error(w, "Template error", http.StatusInternalServerError)
+				return
+			}
+
+			t.Execute(w, data)
+			return
+		}
+
+		// Buat objek shoe untuk update
+		shoeUpdate := entities.ShoeUpdate{
+			Name:        name,
+			IdBrand:     idBrand,
+			Type:        shoeType,
+			Description: description,
+			SKU:         sku,
+			Price:       price,
+			Stock:       stock,
+			UpdatedAt:   time.Now(),
+		}
+
+		// Update data ke database
+		err = shoemodel.Update(id, shoeUpdate)
+		if err != nil {
+			msg := "Failed to update shoe"
+			if err == shoemodel.ErrDuplicateShoe {
+				msg = "Shoe name already exists"
+			}
+
+			// Tampilkan form kembali dengan error
+			brands := brandmodel.GetAll()
+			shoe, _ := shoemodel.Detail(id)
+
+			fieldErrors["name"] = msg
+			data := map[string]interface{}{
+				"shoe":   shoe,
+				"brands": brands,
+				"errors": fieldErrors,
+				"form":   formData,
+			}
+
+			funcMap := template.FuncMap{
+				"formatRupiah": formatRupiah,
+			}
+
+			t := template.New("edit.html").Funcs(funcMap)
+			t, err = t.ParseFiles("views/shoes/edit.html")
+			if err != nil {
+				http.Error(w, "Template error", http.StatusInternalServerError)
+				return
+			}
+
+			t.Execute(w, data)
+			return
+		}
+
+		// Redirect ke halaman shoes dengan pesan sukses
+		http.Redirect(w, r, "/shoes?success=updated", http.StatusSeeOther)
 	}
 }
 
