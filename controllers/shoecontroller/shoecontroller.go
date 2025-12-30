@@ -67,6 +67,15 @@ func Add(w http.ResponseWriter, r *http.Request) {
 				"price":       "",
 				"stock":       "",
 			},
+			"errors": map[string]string{
+				"name":        "",
+				"brand":       "",
+				"type":        "",
+				"description": "",
+				"sku":         "",
+				"price":       "",
+				"stock":       "",
+			},
 		}
 
 		temp := template.Must(template.ParseFiles("views/shoes/create.html"))
@@ -85,9 +94,16 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		priceStr := strings.TrimSpace(r.FormValue("price"))
 		stockStr := strings.TrimSpace(r.FormValue("stock"))
 
-		// Validasi required fields
-		var validationErrors []string
-		var errorBrand string
+		// Inisialisasi map untuk error per field
+		fieldErrors := map[string]string{
+			"name":        "",
+			"brand":       "",
+			"type":        "",
+			"description": "",
+			"sku":         "",
+			"price":       "",
+			"stock":       "",
+		}
 
 		// Data form untuk dikembalikan ke template
 		formData := map[string]any{
@@ -101,93 +117,104 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 		// Validasi nama
 		if name == "" {
-			validationErrors = append(validationErrors, "Shoe name cannot be empty")
+			fieldErrors["name"] = "Shoe name cannot be empty"
 		}
 
-		// Validasi brand - ini adalah masalah utama
-		if idBrandStr == "" {
-			validationErrors = append(validationErrors, "Brand is required")
-			errorBrand = "Brand is required"
-		} else if idBrandStr == "#" {
-			// Periksa jika user memilih placeholder
-			validationErrors = append(validationErrors, "Brand is required")
-			errorBrand = "Brand is required"
+		// Validasi brand
+		hasBrandError := false
+		if idBrandStr == "" || idBrandStr == "#" {
+			fieldErrors["brand"] = "Brand is required"
+			hasBrandError = true
 			idBrandStr = "" // Set kosong untuk konsistensi
-
 		}
 
-		// Validasi field lainnya
+		// Validasi type
 		if shoeType == "" {
-			validationErrors = append(validationErrors, "Type cannot be empty")
+			fieldErrors["type"] = "Type cannot be empty"
 		}
 
+		// Validasi description
 		if description == "" {
-			validationErrors = append(validationErrors, "Description cannot be empty")
+			fieldErrors["description"] = "Description cannot be empty"
 		}
 
+		// Validasi sku
 		if sku == "" {
-			validationErrors = append(validationErrors, "SKU cannot be empty")
+			fieldErrors["sku"] = "SKU cannot be empty"
 		}
 
+		// Validasi price
 		if priceStr == "" {
-			validationErrors = append(validationErrors, "Price cannot be empty")
+			fieldErrors["price"] = "Price cannot be empty"
 		}
 
+		// Validasi stock
 		if stockStr == "" {
-			validationErrors = append(validationErrors, "Stock cannot be empty")
+			fieldErrors["stock"] = "Stock cannot be empty"
 		}
 
 		// Konversi dan validasi tipe data
 		var idBrand int
 		var price, stock int64
-		var conversionErrors []string
+		var hasValidationError bool
 
-		if idBrandStr != "" && idBrandStr != "#" {
+		// Cek apakah ada error validasi field required
+		for _, errMsg := range fieldErrors {
+			if errMsg != "" {
+				hasValidationError = true
+				break
+			}
+		}
+
+		if !hasBrandError && idBrandStr != "" && idBrandStr != "#" {
 			id, err := strconv.Atoi(idBrandStr)
 			if err != nil {
-				conversionErrors = append(conversionErrors, "Invalid brand ID")
-				errorBrand = "Invalid brand ID"
+				fieldErrors["brand"] = "Invalid brand ID"
+				hasValidationError = true
 			} else if id <= 0 {
-				conversionErrors = append(conversionErrors, "Brand ID must be positive")
-				errorBrand = "Brand ID must be positive"
+				fieldErrors["brand"] = "Brand ID must be positive"
+				hasValidationError = true
 			} else {
 				idBrand = id
 				formData["idBrand"] = uint(id)
 			}
 		}
 
-		if priceStr != "" {
+		// Validasi format price jika tidak kosong
+		if priceStr != "" && fieldErrors["price"] == "" {
 			p, err := strconv.ParseInt(priceStr, 10, 64)
 			if err != nil {
-				conversionErrors = append(conversionErrors, "Price must be a valid number")
+				fieldErrors["price"] = "Price must be a valid number"
+				hasValidationError = true
 			} else if p <= 0 {
-				conversionErrors = append(conversionErrors, "Price must be a positive number")
+				fieldErrors["price"] = "Price must be a positive number"
+				hasValidationError = true
 			} else {
 				price = p
 			}
 		}
 
-		if stockStr != "" {
+		// Validasi format stock jika tidak kosong
+		if stockStr != "" && fieldErrors["stock"] == "" {
 			s, err := strconv.ParseInt(stockStr, 10, 64)
 			if err != nil {
-				conversionErrors = append(conversionErrors, "Stock must be a valid number")
+				fieldErrors["stock"] = "Stock must be a valid number"
+				hasValidationError = true
 			} else if s < 0 {
-				conversionErrors = append(conversionErrors, "Stock must be zero or positive number")
+				fieldErrors["stock"] = "Stock must be zero or positive number"
+				hasValidationError = true
 			} else {
 				stock = s
 			}
 		}
 
-		// Gabungkan semua error
-		allErrors := append(validationErrors, conversionErrors...)
-
-		if len(allErrors) > 0 {
+		// Jika ada error, tampilkan form kembali
+		if hasValidationError {
 			brands := brandmodel.GetAll()
 			data := map[string]any{
-				"brands":     brands,
-				"error":      strings.Join(allErrors, ", "),
-				"errorBrand": errorBrand,
-				"form":       formData,
+				"brands": brands,
+				"errors": fieldErrors,
+				"form":   formData,
 			}
 			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
 			temp.Execute(w, data)
@@ -204,6 +231,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 			Price:       price,
 			Stock:       stock,
 			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
 		}
 
 		// Simpan ke database
@@ -214,14 +242,16 @@ func Add(w http.ResponseWriter, r *http.Request) {
 				msg = "Shoe already exists"
 			}
 
+			// Untuk error duplikat, tampilkan di field name
+			fieldErrors["name"] = msg
+
 			brands := brandmodel.GetAll()
 			data := map[string]any{
 				"brands": brands,
-				"error":  msg,
+				"errors": fieldErrors,
 				"form":   formData,
 			}
 			temp := template.Must(template.ParseFiles("views/shoes/create.html"))
-
 			temp.Execute(w, data)
 			return
 		}

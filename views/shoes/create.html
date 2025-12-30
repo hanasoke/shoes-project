@@ -1,4 +1,3 @@
-<!-- views/shoes/create.html -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -36,56 +35,91 @@
                 
                 <hr>
 
-                {{ if .error }}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ .error }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {{ end }}
-
                 <form action="/shoe/add" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control {{ if .errorName }}is-invalid{{ end }}" name="name" id="name" autocomplete="off" value="{{ .form.name }}">
-                        {{ if .errorName }}
+                        <input type="text" class="form-control {{ if .errors.name }}is-invalid{{ end }}" name="name" id="name" autocomplete="off" value="{{ .form.name }}">
+                        {{ if .errors.name }}
                             <div class="invalid-feedback">
-                                {{ .errorName }}
+                                {{ .errors.name }}
                             </div>
+                        {{ else }}
+                            <div class="form-text">Enter the shoe name</div>
+
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="id_brand" class="form-label">Brand *</label>
-                        <select class="form-select {{ if .errorBrand }}is-invalid{{ end }}" id="id_brand" name="id_brand">
-                            <option value="" selected disabled>Select A Brand</option>
+                        <select class="form-select {{ if .errors.brand }}is-invalid{{ end }}" id="id_brand" name="id_brand">
+                            <option value="" disabled {{ if not .form.idBrand }}selected{{ end }}>Select A Brand</option>
                             {{ range .brands }}
-                                <option value="{{ .Id }}" {{ if eq .Id $.form.idBrand }}selected{{ end }}>{{ .Name }}</option>
+                                <option value="{{ .Id }}" {{ if eq .Id $.form.idBrand }}selected{{ end }}>
+                                    {{ .Name }}
+                                </option>
                             {{ end }}
                         </select>
-                        {{ if .errorBrand }}
+                        {{ if .errors.brand }}
                             <div class="invalid-feedback">
-                                {{ .errorBrand }}
+                                {{ .errors.brand }}
                             </div>
+                        {{ else }}
+                            <div class="form-text">Select the shoe brand</div>
                         {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control" name="type" id="type" autocomplete="off" value="{{ .form.type }}">
+                        <input type="text" class="form-control {{ if .errors.type }}is-invalid{{ end }}"  name="type" id="type" autocomplete="off" value="{{ .form.type }}">
+                        {{ if .errors.type }}
+                            <div class="invalid-feedback">
+                                {{ .errors.type }}
+                            </div>
+                        {{ else }}
+                            <div class="form-text">Enter the shoe type (e.g., Running, Casual, Sports)</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" name="description" id="description" rows="3">{{ .form.description }}</textarea>
+                        <textarea class="form-control {{ if .errors.description }}is-invalid{{ end }}" name="description" id="description" rows="3">{{ .form.description }}</textarea>
+                        {{ if .errors.description }}
+                            <div class="invalid-feedback">
+                                {{ .errors.description }}
+                            </div>
+                        {{ else }}
+                            <div class="form-text">Enter a detailed description of the shoe</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="sku" class="form-label">SKU</label>
-                        <input type="text" class="form-control" name="sku" id="sku" autocomplete="off" value="{{ .form.sku }}">
+                        <input type="text" class="form-control {{ if .errors.sku }}is-invalid{{ end }}"  name="sku" id="sku" autocomplete="off" value="{{ .form.sku }}">
+                        {{ if .errors.sku }}
+                            <div class="invalid-feedback">
+                                {{ .errors.sku }}
+                            </div>
+                        {{ else }}
+                            <div class="form-text">Enter the Stock Keeping Unit (unique identifier)</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price</label>
-                        <input type="number" class="form-control" name="price" id="price" min="1" autocomplete="off" value="{{ .form.price }}">
+                        <input type="number" class="form-control {{ if .errors.price }}is-invalid{{ end }}" name="price" id="price" min="1" autocomplete="off" value="{{ .form.price }}">
+                        {{ if .errors.price }}
+                            <div class="invalid-feedback">
+                                {{ .errors.price }}
+                            </div>
+                        {{ else }}
+                            <div class="form-text">Enter the price in currency units</div>
+                        {{ end }}
                     </div>
                     <div class="mb-3">
                         <label for="stock" class="form-label">Stock</label>
-                        <input type="number" class="form-control" name="stock" id="stock" min="0" autocomplete="off" value="{{ .form.stock }}">
+                        <input type="number" class="form-control {{ if .errors.stock }}is-invalid{{ end }}" name="stock" id="stock" min="0" autocomplete="off" value="{{ .form.stock }}">
+                        {{ if .errors.stock }}
+                            <div class="invalid-feedback">
+                                {{ .errors.stock }}
+                            </div>
+                        {{ else }}
+                            <div class="form-text">Enter the available stock quantity</div>
+                        {{ end }}
                     </div>
                     <div class="row">
                         <div class="col">
