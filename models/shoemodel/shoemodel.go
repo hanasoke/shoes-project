@@ -138,7 +138,6 @@ func Create(shoe entities.ShoeCreate) error {
 	return err
 }
 
-// models/shoemodel/shoemodel.go
 func Detail(id int) (entities.Shoe, error) {
 	row := config.DB.QueryRow(`
 		SELECT 

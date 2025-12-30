@@ -11,11 +11,35 @@ import (
 	"time"
 )
 
+// Fungsi untuk format Rupiah
+func formatRupiah(amount int64) string {
+	str := strconv.FormatInt(amount, 10)
+
+	// Format dengan pemisah ribuan
+	n := len(str)
+	if n <= 3 {
+		return "Rp " + str
+	}
+
+	var result []string
+	for i := n; i > 0; i -= 3 {
+		start := i - 3
+		if start < 0 {
+			start = 0
+		}
+		result = append([]string{str[start:i]}, result...)
+	}
+
+	return "Rp " + strings.Join(result, ".")
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
+	// Buat funcMap dengan fungsi helper
 	funcMap := template.FuncMap{
 		"add": func(a, b int) int {
 			return a + b
 		},
+		"formatRupiah": formatRupiah,
 	}
 
 	success := ""
@@ -69,8 +93,14 @@ func Detail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse template
-	temp, err := template.ParseFiles("views/shoes/detail.html")
+	// Buat funcMap untuk detail
+	funcMap := template.FuncMap{
+		"formatRupiah": formatRupiah,
+	}
+
+	// Parse template dengan fungsi helper
+	t := template.New("detail.html").Funcs(funcMap)
+	t, err = t.ParseFiles("views/shoes/detail.html")
 	if err != nil {
 		http.Error(w, "Template error", http.StatusInternalServerError)
 		return
@@ -82,7 +112,7 @@ func Detail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute template dengan data
-	err = temp.Execute(w, data)
+	err = t.Execute(w, data)
 	if err != nil {
 		http.Error(w, "Template execution error", http.StatusInternalServerError)
 		return
