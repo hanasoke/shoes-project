@@ -15,7 +15,6 @@ type Shoe struct {
 	UpdatedAt   time.Time
 }
 
-// Tambahkan struct untuk menyimpan ID brand
 type ShoeCreate struct {
 	Name        string
 	IdBrand     uint
@@ -25,5 +24,16 @@ type ShoeCreate struct {
 	Price       int64
 	Stock       int64
 	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type ShoeUpdate struct {
+	Name        string
+	IdBrand     uint
+	Type        string
+	Description string
+	SKU         string
+	Price       int64
+	Stock       int64
 	UpdatedAt   time.Time
 }

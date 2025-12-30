@@ -185,6 +185,57 @@ func Detail(id int) (entities.Shoe, error) {
 	return shoe, nil
 }
 
+func Update(id int, shoe entities.ShoeUpdate) error {
+	// Cek apakah nama sudah digunakan oleh shoe lain
+	exists, err := IsShoeExistsExceptID(shoe.Name, id)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return ErrDuplicateShoe
+	}
+
+	// Update data shoe
+	result, err := config.DB.Exec(`
+			UPDATE shoes 
+			SET 
+				name = ?, 
+				id_brand = ?,
+				type = ?, 
+				description = ?,
+				sku = ?,
+				price = ?, 
+				stock = ?, 
+				updated_at = ?
+			WHERE id = ?`,
+		shoe.Name,
+		shoe.IdBrand,
+		shoe.Type,
+		shoe.Description,
+		shoe.SKU,
+		shoe.Price,
+		shoe.Stock,
+		shoe.UpdatedAt,
+		id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("no shoe found to update")
+	}
+
+	return nil
+}
+
 func Delete(id int) error {
 	_, err := config.DB.Exec(`DELETE FROM shoes WHERE id = ?`, id)
 	return err
