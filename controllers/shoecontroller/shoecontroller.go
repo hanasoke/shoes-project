@@ -328,6 +328,67 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Edit(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+
+		// Ambil ID dari query parameter
+		idStr := r.URL.Query().Get("id")
+		if idStr == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Konversi ID ke integer
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
+
+		// Ambil data shoe dari model
+		shoe, err := shoemodel.Detail(id)
+		if err != nil {
+			// Handle jika shoe tidak ditemukan
+			if err.Error() == "shoe not found" {
+				http.Error(w, "Shoe not found", http.StatusNotFound)
+				return
+			}
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		// Buat funcMap untuk detail
+		funcMap := template.FuncMap{
+			"formatRupiah": formatRupiah,
+		}
+
+		// Parse template dengan fungsi helper
+		t := template.New("edit.html").Funcs(funcMap)
+		t, err = t.ParseFiles("views/shoes/edit.html")
+		if err != nil {
+			http.Error(w, "Template error", http.StatusInternalServerError)
+			return
+		}
+
+		// Prepare data untuk template
+		data := map[string]interface{}{
+			"shoe": shoe,
+		}
+
+		// Execute template dengan data
+		err = t.Execute(w, data)
+		if err != nil {
+			http.Error(w, "Template execution error", http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
+	if r.Method == http.MethodPost {
+
+	}
+}
+
 func Delete(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idString)
