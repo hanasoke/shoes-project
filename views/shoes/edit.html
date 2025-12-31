@@ -121,12 +121,10 @@
                     <!-- Price Field -->
                     <div class="mb-3">
                         <label for="price" class="form-label required">Price</label>
-                        <div class="input-group">
-                            <span class="input-group-text">Rp</span>
-                            <input type="number" class="form-control {{ if .errors.price }}is-invalid{{ end }}" 
+                        <input type="number" class="form-control {{ if .errors.price }}is-invalid{{ end }}" 
                                 name="price" id="price" min="1" autocomplete="off" 
                                 value="{{ if .form.price }}{{ .form.price }}{{ else }}{{ .shoe.Price }}{{ end }}">
-                        </div>
+                        
                         {{ if .errors.price }}
                             <div class="invalid-feedback">
                                 {{ .errors.price }}
