@@ -111,8 +111,7 @@
                         <label for="sku" class="form-label required">SKU</label>
                         <input type="text" class="form-control {{ if .errors.sku }}is-invalid{{ end }}" 
                                name="sku" id="sku" autocomplete="off" 
-                               value="{{ if .form.sku }}{{ .form.sku }}{{ else }}{{ .shoe.SKU }}{{ end }}"
-                               required>
+                               value="{{ if .form.sku }}{{ .form.sku }}{{ else }}{{ .shoe.SKU }}{{ end }}">
                         {{ if .errors.sku }}
                             <div class="invalid-feedback">
                                 {{ .errors.sku }}
@@ -156,13 +155,13 @@
                     <!-- Action Buttons -->
                     <div class="row">
                         <div class="col">
-                            <a href="/shoe/detail?id={{ .shoe.Id }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Cancel
+                            <a href="/shoes" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
                             </a>
                         </div>
                         <div class="col text-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Update Shoe
+                                <i class="bi bi-check-circle"></i> Update
                             </button>
                         </div>
                     </div>
