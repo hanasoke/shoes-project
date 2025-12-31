@@ -52,16 +52,11 @@
                     <!-- Name Field -->
                     <div class="mb-3">
                         <label for="name" class="form-label required">Name</label>
-                        <input type="text" class="form-control {{ if .errors.name }}is-invalid{{ end }}" 
-                               name="name" id="name" autocomplete="off" 
-                               value="{{ if .form.name }}{{ .form.name }}{{ else }}{{ .shoe.Name }}{{ end }}"
-                               required>
+                        <input type="text" class="form-control {{ if .errors.name }}is-invalid{{ end }}" name="name" id="name" autocomplete="off" value="{{ if .form.name }}{{ .form.name }}{{ else }}{{ .shoe.Name }}{{ end }}">
                         {{ if .errors.name }}
                             <div class="invalid-feedback">
                                 {{ .errors.name }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Enter the shoe name</div>
                         {{ end }}
                     </div>
 
@@ -69,7 +64,7 @@
                     <div class="mb-3">
                         <label for="id_brand" class="form-label required">Brand</label>
                         <select class="form-select {{ if .errors.brand }}is-invalid{{ end }}" 
-                                id="id_brand" name="id_brand" required>
+                                id="id_brand" name="id_brand">
                             <option value="" disabled>Select A Brand</option>
                             {{ range .brands }}
                                 <option value="{{ .Id }}" 
@@ -86,38 +81,28 @@
                             <div class="invalid-feedback">
                                 {{ .errors.brand }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Select the shoe brand</div>
                         {{ end }}
                     </div>
 
                     <!-- Type Field -->
                     <div class="mb-3">
                         <label for="type" class="form-label required">Type</label>
-                        <input type="text" class="form-control {{ if .errors.type }}is-invalid{{ end }}" 
-                               name="type" id="type" autocomplete="off" 
-                               value="{{ if .form.type }}{{ .form.type }}{{ else }}{{ .shoe.Type }}{{ end }}"
-                               required>
+                        <input type="text" class="form-control {{ if .errors.type }}is-invalid{{ end }}" name="type" id="type" autocomplete="off" value="{{ if .form.type }}{{ .form.type }}{{ else }}{{ .shoe.Type }}{{ end }}">
                         {{ if .errors.type }}
                             <div class="invalid-feedback">
                                 {{ .errors.type }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Enter the shoe type (e.g., Running, Casual, Sports)</div>
                         {{ end }}
                     </div>
 
                     <!-- Description Field -->
                     <div class="mb-3">
                         <label for="description" class="form-label required">Description</label>
-                        <textarea class="form-control {{ if .errors.description }}is-invalid{{ end }}" 
-                                  name="description" id="description" rows="3" required>{{ if .form.description }}{{ .form.description }}{{ else }}{{ .shoe.Description }}{{ end }}</textarea>
+                        <textarea class="form-control {{ if .errors.description }}is-invalid{{ end }}" name="description" id="description" rows="3" required>{{ if .form.description }}{{ .form.description }}{{ else }}{{ .shoe.Description }}{{ end }}</textarea>
                         {{ if .errors.description }}
                             <div class="invalid-feedback">
                                 {{ .errors.description }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Enter a detailed description of the shoe</div>
                         {{ end }}
                     </div>
 
@@ -132,8 +117,6 @@
                             <div class="invalid-feedback">
                                 {{ .errors.sku }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Enter the Stock Keeping Unit (unique identifier)</div>
                         {{ end }}
                     </div>
 
@@ -144,8 +127,7 @@
                             <span class="input-group-text">Rp</span>
                             <input type="number" class="form-control {{ if .errors.price }}is-invalid{{ end }}" 
                                    name="price" id="price" min="1" autocomplete="off" 
-                                   value="{{ if .form.price }}{{ .form.price }}{{ else }}{{ .shoe.Price }}{{ end }}"
-                                   required>
+                                   value="{{ if .form.price }}{{ .form.price }}{{ else }}{{ .shoe.Price }}{{ end }}">
                         </div>
                         {{ if .errors.price }}
                             <div class="invalid-feedback">
@@ -163,14 +145,11 @@
                         <label for="stock" class="form-label required">Stock</label>
                         <input type="number" class="form-control {{ if .errors.stock }}is-invalid{{ end }}" 
                                name="stock" id="stock" min="0" autocomplete="off" 
-                               value="{{ if .form.stock }}{{ .form.stock }}{{ else }}{{ .shoe.Stock }}{{ end }}"
-                               required>
+                               value="{{ if .form.stock }}{{ .form.stock }}{{ else }}{{ .shoe.Stock }}{{ end }}">
                         {{ if .errors.stock }}
                             <div class="invalid-feedback">
                                 {{ .errors.stock }}
                             </div>
-                        {{ else }}
-                            <div class="form-text">Enter the available stock quantity</div>
                         {{ end }}
                     </div>
 
