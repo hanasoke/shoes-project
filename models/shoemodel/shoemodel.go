@@ -121,9 +121,8 @@ func Create(shoe entities.ShoeCreate) error {
 			sku, 
 			price, 
 			stock, 
-			created_at,
-			updated_at
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			created_at
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 		shoe.Name,
 		shoe.IdBrand,
 		shoe.Type,
@@ -132,7 +131,6 @@ func Create(shoe entities.ShoeCreate) error {
 		shoe.Price,
 		shoe.Stock,
 		shoe.CreatedAt,
-		shoe.UpdatedAt,
 	)
 
 	return err
